@@ -1,7 +1,8 @@
-import { PLYLoader } from './node_modules/three/examples/jsm/loaders/PLYLoader.js';
+//import { PLYLoader } from './node_modules/three/examples/jsm/loaders/PLYLoader.js';
 //import {OrbitControls} from '../node_modules/three/examples/js/controls/OrbitControls.js';
 //import * as THREE from '../node_modules/three/build/three.js';
 //import {DragControls} from '../node_modules/three/examples/js/controls/DragControls.js';
+import { PLYLoader } from 'https://unpkg.com/three/examples/jsm/loaders/PLYLoader.js';
 
 //Loading
 const textureLoader = new THREE.TextureLoader();
