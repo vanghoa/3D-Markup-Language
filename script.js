@@ -61,13 +61,13 @@ pointLight2.position.set(0.85,0.48,0.48);
 //light2.add(pointLight2.position, 'z').min(-3).max(3).step(0.01);
 //light2.add(pointLight2, 'intensity').min(0).max(20).step(1);
 
-const light2color = {
-    color: 0xff0000
-}
+//const light2color = {
+//    color: 0xff0000
+//}
 
-light2.addColor(light2color, 'color').onChange(() => {
-    pointLight2.color.set(light2color.color);
-}) 
+//light2.addColor(light2color, 'color').onChange(() => {
+//    pointLight2.color.set(light2color.color);
+//}) 
 //// Light 3
 
 const ambient = new THREE.AmbientLight( 0xffffff, .3 );
