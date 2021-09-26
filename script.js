@@ -30,16 +30,9 @@ const geometry = new THREE.BoxGeometry(.5, .5, .5);
 const material = new THREE.MeshPhongMaterial({color: 0x44aa88});
 
 // Mesh
-const sphere = new THREE.Mesh(geometry,material);
-scene.add(sphere);
-
-var objection = [];
-objection.push(sphere);
-
+var objectionxoay = [];
 var objectiondrag = [];
-objectiondrag.push(sphere);
-
-//OBJLoad
+//OBJLoad 
 objectload('static/Sound-1.ply');
 
 //// Light 2
@@ -113,7 +106,7 @@ const controls = new OrbitControls(camera, canvas)
 
 camera.position.set(0,0,3);
 
-camera.lookAt(sphere.position);
+camera.lookAt(0,0,0);
 scene.add(camera);
 controls.update()
 
@@ -151,8 +144,9 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
 
     // Update objects
-    objection.forEach((obj) => {
-    obj.rotation.y = .5 * elapsedTime;});
+    objectionxoay.forEach((obj) => {
+        obj.rotation.y = .5 * elapsedTime;
+    });
 
     // Update Orbital Controls
     controls.update()
@@ -247,10 +241,15 @@ function objectload(link) {
                     clearcoatRoughness: 0,
         }))
 
+        meshobj.scale.set(.5,.5,.5);
+        meshobj.rotation.set(0,0,0);
+        meshobj.position.set(0,-0.5,0);
+
         scene.add(meshobj);
 
         //scene.add(objfile);
         objectiondrag.push(meshobj);
+        objectionxoay.push(meshobj);
         console.log(objectiondrag.length);
     });
     
