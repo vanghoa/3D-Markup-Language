@@ -1,5 +1,4 @@
-import {OBJLoader} from './node_modules/three/examples/jsm/loaders/OBJLoader.js';
-import {PLYLoader} from './node_modules/three/examples/jsm/loaders/PLYLoader.js';
+import { PLYLoader } from './node_modules/three/examples/jsm/loaders/PLYLoader.js';
 //import {OrbitControls} from '../node_modules/three/examples/js/controls/OrbitControls.js';
 //import * as THREE from '../node_modules/three/build/three.js';
 //import {DragControls} from '../node_modules/three/examples/js/controls/DragControls.js';
