@@ -2,7 +2,11 @@
 //import {OrbitControls} from '../node_modules/three/examples/js/controls/OrbitControls.js';
 //import * as THREE from '../node_modules/three/build/three.js';
 //import {DragControls} from '../node_modules/three/examples/js/controls/DragControls.js';
-import { PLYLoader } from 'https://unpkg.com/three/examples/jsm/loaders/PLYLoader.js';
+import * as THREE from 'https://cdn.skypack.dev/three@0.132.2/build/three.module.js';
+import { OrbitControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js';
+import { DragControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/DragControls.js';
+import { PLYLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/PLYLoader.js';
+
 
 //Loading
 const textureLoader = new THREE.TextureLoader();
@@ -10,7 +14,7 @@ const textureLoader = new THREE.TextureLoader();
 const normalTexture = textureLoader.load('../static/textures/NormalMap.png');
 
 // Board Kiem tra
-const gui = new dat.GUI()
+//const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -50,12 +54,12 @@ pointLight2.position.set(0.85,0.48,0.48);
 //const pointLightHelper2 = new THREE.PointLightHelper(pointLight2, .3);
 //scene.add(pointLightHelper2);
 
-const light2 = gui.addFolder('Light 2');
+//const light2 = gui.addFolder('Light 2');
 
-light2.add(pointLight2.position, 'y').min(-3).max(3).step(0.01);
-light2.add(pointLight2.position, 'x').min(-6).max(3).step(0.01);
-light2.add(pointLight2.position, 'z').min(-3).max(3).step(0.01);
-light2.add(pointLight2, 'intensity').min(0).max(20).step(1);
+//light2.add(pointLight2.position, 'y').min(-3).max(3).step(0.01);
+//light2.add(pointLight2.position, 'x').min(-6).max(3).step(0.01);
+//light2.add(pointLight2.position, 'z').min(-3).max(3).step(0.01);
+//light2.add(pointLight2, 'intensity').min(0).max(20).step(1);
 
 const light2color = {
     color: 0xff0000
@@ -107,7 +111,7 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 
 // Controls Orbit
-const controls = new THREE.OrbitControls(camera, canvas)
+const controls = new OrbitControls(camera, canvas)
 //controls.enableDamping = true
 
 camera.position.set(0,0,3);
@@ -168,7 +172,7 @@ const tick = () =>
 
 /////////////////////////////////////////////////////////// DRAG
 /**/ 
-const controldrag = new THREE.DragControls(objectiondrag, camera, canvas );
+const controldrag = new DragControls(objectiondrag, camera, canvas );
 
 
 
