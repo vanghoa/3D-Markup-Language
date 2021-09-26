@@ -9,9 +9,6 @@ import { PLYLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lo
 
 
 //Loading
-const textureLoader = new THREE.TextureLoader();
-
-const normalTexture = textureLoader.load('../static/textures/NormalMap.png');
 
 // Board Kiem tra
 //const gui = new dat.GUI()
@@ -43,7 +40,7 @@ var objectiondrag = [];
 objectiondrag.push(sphere);
 
 //OBJLoad
-objectload('../static/Sound-1.ply');
+objectload('static/Sound-1.ply');
 
 //// Light 2
 
