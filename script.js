@@ -82,15 +82,19 @@ const sizes = {
 window.addEventListener('resize', () =>
 {
     // Update sizes
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+    aspect = sizes.width / sizes.height;
 
     // Update camera
-    camera.aspect = sizes.width / sizes.height
-    camera.updateProjectionMatrix()
+    camera.left = -aspect * frustum;
+    camera.right = aspect * frustum;
+    camera.top = frustum;
+    camera.bottom = -frustum;
+    camera.updateProjectionMatrix();
 
     // Update renderer
-    renderer.setSize(sizes.width, sizes.height)
+    renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
@@ -98,13 +102,15 @@ window.addEventListener('resize', () =>
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+let aspect = sizes.width / sizes.height;
+let frustum = 3;
+const camera = new THREE.OrthographicCamera(-aspect * frustum, aspect * frustum, frustum, -frustum, 0.1, 1000)
 
 // Controls Orbit
 const controls = new OrbitControls(camera, canvas)
 //controls.enableDamping = true
 
-camera.position.set(0,0,3);
+camera.position.set(0,0,10);
 
 camera.lookAt(0,0,0);
 scene.add(camera);
@@ -238,7 +244,6 @@ function objectload(link, link2) {
                     transparent: true,
                     opacity: 0.5,
                     depthWrite: false,
-                    deptTest: false,
                     transmission: 1.0,
                     clearcoat: 1.0,
                     clearcoatRoughness: 0,
