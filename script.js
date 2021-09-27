@@ -33,7 +33,7 @@ const material = new THREE.MeshPhongMaterial({color: 0x44aa88});
 var objectionxoay = [];
 var objectiondrag = [];
 //OBJLoad 
-objectload('static/Sound-1.ply');
+objectload('static/untitled3_full.ply');
 
 //// Light 2
 
@@ -197,7 +197,7 @@ controldrag.addEventListener( 'dragend', function ( event ) {
 /**
  * OBJLoad
  */
-function objectload(link) {
+function objectload(link, link2) {
     let loader = new PLYLoader()
     /*
     let mtlloader = new MTLLoader();
@@ -227,30 +227,30 @@ function objectload(link) {
                 //});
             //}
         //})
-
         objfile.computeVertexNormals();
 
-        var meshobj = new THREE.Mesh(objfile, new THREE.MeshPhysicalMaterial({
+        let meshobj = new THREE.Mesh(objfile, new THREE.MeshPhysicalMaterial({
                     color: 0xffffff, 
+                    side: THREE.DoubleSide,
                     metalness: 0,
                     roughness: 0,
                     transparent: true,
+                    opacity: 0.5,
+                    //depthFunc: THREE.NotEqualDepth,
                     transmission: 1.0,
-                    side: THREE.DoubleSide,
                     clearcoat: 1.0,
                     clearcoatRoughness: 0,
         }))
 
-        meshobj.scale.set(.5,.5,.5);
-        meshobj.rotation.set(0,0,0);
-        meshobj.position.set(0,-0.5,0);
+        meshobj.scale.set(1,1,1);
+        meshobj.position.set(0,0,0);
 
         scene.add(meshobj);
 
         //scene.add(objfile);
         objectiondrag.push(meshobj);
         objectionxoay.push(meshobj);
-        console.log(objectiondrag.length);
+        //console.log(objectiondrag.length);
     });
     
     
