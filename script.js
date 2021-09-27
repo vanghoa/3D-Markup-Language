@@ -63,7 +63,7 @@ pointLight2.position.set(0.85,0.48,0.48);
 const ambient = new THREE.AmbientLight( 0xffffff, .3 );
 scene.add( ambient );
 const color = 0xFFFFFF;
-const intensity = 1;
+const intensity = 30;
 const light = new THREE.DirectionalLight(color, intensity);
 light.position.set(-1, 2, 4);
 scene.add(light);
@@ -232,18 +232,19 @@ function objectload(link, link2) {
         let meshobj = new THREE.Mesh(objfile, new THREE.MeshPhysicalMaterial({
                     color: 0xffffff, 
                     side: THREE.DoubleSide,
+                    shadowSide: THREE.DoubleSide,
                     metalness: 0,
                     roughness: 0,
                     transparent: true,
                     opacity: 0.5,
-                    //depthFunc: THREE.NotEqualDepth,
+                    depthWrite: false,
+                    deptTest: false,
                     transmission: 1.0,
                     clearcoat: 1.0,
                     clearcoatRoughness: 0,
         }))
 
-        meshobj.scale.set(1,1,1);
-        meshobj.position.set(0,0,0);
+        meshobj.position.set(0,-.5,0);
 
         scene.add(meshobj);
 
