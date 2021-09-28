@@ -46,11 +46,16 @@
         }       
         
         .container {
-            position: absolute;
+            position: relative;
             top: 0;
             left: 0;
-            padding: 20px;
+            padding: 1rem;
             z-index: 1;
+            width: fit-content;
+        }
+
+        .container * {
+            padding: .2rem;
         }
 
         p {
@@ -60,10 +65,21 @@
 </head>
 <body>
     <div class="container">
-        <p>Đổi góc nhìn</p>
+        <p>Biến góc nhìn</p>
         <button type="button" id="rotx"> x </button>
         <button type="button" id="roty"> y </button>
         <button type="button" id="rotz"> z </button>
+    </div>
+
+    <div class="container">
+        <p>Chọn vùng mã hóa</p>
+        <button type="button" id="kickhoatvmh"> VMH phức tạp </button>
+        <div>
+            <input type="range" min="0" max="4" value="2" step="1" class="slider" id="slidevmh">
+        </div>
+        <button type="button" id="vmhrect"> VMH đơn giản</button> </br>
+        <button type="button" id="vmhtri"> VMH đơn giản hơn</button> </br>
+        <button type="button" id="vmhxoa" style="background-color: crimson;"> reset VMH</button>
     </div>
 
     <canvas class="webgl"></canvas>

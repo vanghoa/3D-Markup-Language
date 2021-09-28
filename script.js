@@ -10,7 +10,7 @@ import { PLYLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lo
 
 let objectionxoay = [];
 let objectiondrag = [];
-let soanchor = 5;
+let soanchor = 4;
 let anchortong = new THREE.Object3D();
 
 const sizes = {
@@ -26,13 +26,9 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
-scene.background = 0xdddddd;
 
 //environment
 scene.background = new THREE.Color(0xcbf4ba);
-
-// Objects
-const geometry = new THREE.BoxGeometry(.5, .5, .5);
 
 /**
  * Camera
@@ -56,10 +52,21 @@ controls.update()
 
 // Materials
 const verybasicmat = new THREE.MeshBasicMaterial( {
-	color: 0x000000,
+	color: 0xffffff,
     transparent: true,
-    opacity: 0.5
+    opacity: .8
 } );
+
+const wireframemat = new THREE.MeshBasicMaterial({
+    color: 0x000000, 
+    wireframe: true,
+})
+
+const wireframematgeo = new THREE.LineBasicMaterial({
+    color: 0x000000,
+    transparent: true,
+    opacity: .1,
+})
 
 const sangbongmat = new THREE.MeshPhysicalMaterial({
     color: 0xffffff, 
@@ -79,32 +86,72 @@ const sangbongmat = new THREE.MeshPhysicalMaterial({
 
 // OBJLoad 
 let amb = {
-    //sound: objectload('static/sound container.ply', sangbongmat, true)
+    //sound: objectload('static/Tree.ply', sangbongmat, true)
 };
 
 let anchor = [];
 
 // Mat Phang
-const planesz = 20;
+const planesz = 8/9*aspect*frustum;
 const plane = new THREE.Mesh(new THREE.PlaneGeometry(planesz, planesz), new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.FrontSide}));
-const planewire = new THREE.Mesh(new THREE.PlaneGeometry(planesz, planesz), new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true}));
+
+
+const planewireframe = new THREE.WireframeGeometry(new THREE.PlaneGeometry(planesz, planesz));
+
+const planewire = new THREE.LineSegments(planewireframe, wireframematgeo);
 const planegroup = new THREE.Group().add(plane).add(planewire);
 planegroup.rotateX(-Math.PI/2);
-planegroup.position.set(0,-1-frustum/2,0);
+planegroup.position.set(0,-frustum/2,0);
 
 scene.add(planegroup);
 
 
 // Anchor Container
-for (let dem = -2; dem <= soanchor - 3; dem++) {
+for (let dem = -Math.floor(soanchor/2); dem <= soanchor -1 -Math.floor(soanchor/2); dem++) {
     anchor.push(wireframeload('static/hop-nhoo.ply', 'static/hop-to-nap.ply', verybasicmat, false, dem*4,-.5,0))
 }
 
 let boundinganchor = new THREE.Box3().setFromObject(anchortong);
-anchortong.position.set(0,-frustum/2,0);
+anchortong.position.set(0,planegroup.position.y + 1,0);
 scene.add(anchortong);
 
+// Vung Ma Hoa
+let vmh;
+const slidevmh = document.querySelector('#slidevmh');
+const vmhrect = document.querySelector('#vmhrect');
+const kickvmh = document.querySelector('#kickhoatvmh');
+const vmhtri = document.querySelector('#vmhtri');
+const vmhxoa = document.querySelector('#vmhxoa');
 
+function vmhcreate(geometryvmh){
+    scene.remove(vmh);
+    const wireframe = new THREE.WireframeGeometry(geometryvmh);
+
+    vmh = new THREE.LineSegments(wireframe, wireframematgeo);
+
+    scene.add(vmh);    
+}
+
+kickvmh.addEventListener('click', function(){
+        vmhcreate(new THREE.OctahedronGeometry(frustum/2,Number(slidevmh.value))); 
+});
+
+slidevmh.oninput = function() {
+        vmhcreate(new THREE.OctahedronGeometry(frustum/2,Number(slidevmh.value)));
+}
+
+vmhrect.addEventListener('click', function(){
+        vmhcreate(new THREE.BoxGeometry(frustum, frustum, frustum));
+});
+
+vmhtri.addEventListener('click', function(){
+        vmhcreate(new THREE.ConeGeometry(frustum, frustum, 3));
+        vmh.position.z = -1;
+});
+
+vmhxoa.addEventListener('click', function(){
+        scene.remove(vmh);
+});
 
 //// Light 2
 
@@ -298,7 +345,6 @@ function objectload(link, vatlieu, xoayornot) {
 
 function wireframeload(linkhop, linknap, vatlieu, xoayornot, diemx, diemy, diemz) {
     let loader = new PLYLoader()
-    const matwire = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true});
     let meshtrunggian = new THREE.Object3D();
     let meshcontainer = new THREE.Object3D();
     let meshobjhop;
@@ -308,7 +354,7 @@ function wireframeload(linkhop, linknap, vatlieu, xoayornot, diemx, diemy, diemz
 
     loader.load(linknap, (objfile) => {
         objfile.computeVertexNormals();
-        meshobjnap = new THREE.Mesh(objfile, matwire);
+        meshobjnap = new THREE.Mesh(objfile, wireframemat);
         meshobjwirenap = new THREE.Mesh(objfile, vatlieu);
 
         //meshobjnap.position.y = 1;
@@ -324,7 +370,7 @@ function wireframeload(linkhop, linknap, vatlieu, xoayornot, diemx, diemy, diemz
 
     loader.load(linkhop, (objfile) => {
         objfile.computeVertexNormals();
-        meshobjhop = new THREE.Mesh(objfile, matwire);
+        meshobjhop = new THREE.Mesh(objfile, wireframemat);
         meshobjwirehop = new THREE.Mesh(objfile, vatlieu);
 
         meshobjhop.add(meshtrunggian);
@@ -346,25 +392,20 @@ function wireframeload(linkhop, linknap, vatlieu, xoayornot, diemx, diemy, diemz
     return meshcontainer;
 }
 /**
- * Change View Mode
+ * Doi Goc Nhin
  */
-document.querySelector('#rotx').addEventListener('click', function(){
-    camera.position.set(camerakhoangcach, 0, 0);
-    camera.updateProjectionMatrix();
-    controls.update()
-})
+document.querySelector('#rotx').addEventListener('click', function(){changeview('x',1,'y','z')});
+document.querySelector('#roty').addEventListener('click', function(){changeview('y',-1,'x','z')});
+document.querySelector('#rotz').addEventListener('click', function(){changeview('z',1,'x','y')});
 
-document.querySelector('#roty').addEventListener('click', function(){
-    camera.position.set(0, -camerakhoangcach, 0);
-    camera.updateProjectionMatrix();
-    controls.update()
-})
 
-document.querySelector('#rotz').addEventListener('click', function(){
-    camera.position.set(0, 0, camerakhoangcach);
+function changeview(propertyassign, value, propertyassign1, propertyassign2) {
+    camera.position[propertyassign] = value*camerakhoangcach;
+    camera.position[propertyassign1] = 0;
+    camera.position[propertyassign2] = 0;
     camera.updateProjectionMatrix();
-    controls.update()
-})
+    controls.update(camera.position);
+}
 
 /**/
 tick()
