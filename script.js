@@ -52,6 +52,9 @@ scene.add(meshenv)
 document.querySelector('#dichuyen').addEventListener('click', function(){
     teleport(String(dibay));
     dibay++;
+    if (dibay == 3) {document.querySelector('#dichuyen').innerHTML = 'đến nhà diệu li';}
+    if (dibay > 3) {dibay = 0; document.querySelector('#dichuyen').innerHTML = 'quay lại nhà BA nhá';}
+    if (dibay == 1) {document.querySelector('#dichuyen').innerHTML = 'lên nhà a M';}
     console.log('1');
 })
 
@@ -658,11 +661,11 @@ function wireframeload(linkhop, linknap, xoayornot, diemx, diemy, diemz, hslhue,
     let objectiondragsub = [];
     const vatlieuhop = new THREE.MeshBasicMaterial( {
         transparent: true,
-        opacity: .8
+        opacity: 1
     } );
     const vatlieunap = new THREE.MeshBasicMaterial( {
         transparent: true,
-        opacity: .8
+        opacity: 1
     } );
     vatlieuhop.color.setHSL(hslhue,1,.5);
     vatlieunap.color.setHSL(hslhue,1,.3);
