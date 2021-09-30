@@ -39,18 +39,48 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-const texture = new THREE.TextureLoader().load('static/Street View 3602 1.jpg');
-
-const texturemat = new THREE.MeshBasicMaterial({map: texture});
-
-const geoenv = new THREE.SphereGeometry(30,60,40);
-
+let texture = new THREE.TextureLoader().load('static/Street View 360 0.jpg');
+let texturemat = new THREE.MeshBasicMaterial({map: texture, transparent: true});
+let geoenv = new THREE.SphereGeometry(30,60,40);
 geoenv.scale(-1,1,1);
-
-const meshenv = new THREE.Mesh(geoenv, texturemat);
-meshenv.rotation.set(0,0,0);
-
+let meshenv = new THREE.Mesh(geoenv, texturemat);
+let dibay = 1;
+let tanbien = false;
+let hienra = false;
 scene.add(meshenv)
+
+document.querySelector('#dichuyen').addEventListener('click', function(){
+    teleport(String(dibay));
+    dibay++;
+    console.log('1');
+})
+
+function teleport(maybay) {
+
+    tanbien = true;
+
+    setTimeout(function(){
+        scene.remove(meshenv);
+        tanbien = false;
+
+        texture = new THREE.TextureLoader().load('static/Street View 360 '+ maybay + '.jpg');
+        texturemat = new THREE.MeshBasicMaterial({map: texture, transparent: true, opacity: 0});
+
+        geoenv = new THREE.SphereGeometry(30,60,40);
+
+        geoenv.scale(-1,1,1);
+
+        meshenv = new THREE.Mesh(geoenv, texturemat);
+
+        scene.add(meshenv) 
+        hienra = true;
+
+    },2000);
+
+    setTimeout(function(){
+        hienra = false;
+    },4000);
+}
 
 /*
 scene.background = new THREE.CubeTextureLoader()
@@ -101,8 +131,10 @@ const vmhmatsurface = new THREE.MeshBasicMaterial( {
 } );
 
 const wireframemat = new THREE.MeshBasicMaterial({
-    color: 0x000000, 
+    color: 0xffffff, 
     wireframe: true,
+    transparent: true,
+    opacity: 0.1
 })
 
 const wireframematgeo = new THREE.LineBasicMaterial({
@@ -149,14 +181,15 @@ const legomat = new THREE.MeshPhysicalMaterial({
     //side: THREE.DoubleSide,
     //shadowSide: THREE.DoubleSide,
     metalness: 0,
-    roughness: 0.3,
+    roughness: 0,
     transparent: true,
-    opacity: 0.8,
+    opacity: 1,
     //depthWrite: false,
     //depthTest: false,
-    transmission: 0.5,
+    transmission: 0.2,
     clearcoat: 1.0,
     clearcoatRoughness: 0,
+    envMap: texture
 })
 
 // Mesh
@@ -251,7 +284,7 @@ function generateanchor(soanchorx) {
             ///////////////////
 
             for (let dem = -Math.floor(soanchorx/2), colordem = 0, nameanc = 0; dem <= soanchorx -1 -Math.floor(soanchorx/2); dem++, colordem+=.2, nameanc++) {
-                wireframeload('static/hop-nhoo.ply', 'static/hop-to-nap.ply', false, dem*2.3,0,0, colordem, nameanc);
+                wireframeload('static/CAINOI.ply', 'static/CAINAP.ply', false, dem*2.3,1,0, colordem, nameanc);
             }
             ////////// FUCK2
             for (let k = 0; k <= controlarray.length - 1; k++) 
@@ -490,6 +523,10 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
+    if (tanbien) {texturemat.opacity-=0.01;}
+    
+    if (hienra) {texturemat.opacity+=0.01;}
+
     // Update objects
     objectionxoay.forEach((obj) => {
         obj.rotation.y = .5 * elapsedTime;
@@ -637,7 +674,7 @@ function wireframeload(linkhop, linknap, xoayornot, diemx, diemy, diemz, hslhue,
         meshobjnap = new THREE.Mesh(objfile, wireframemat);
         meshobjwirenap = new THREE.Mesh(objfile, vatlieunap);
         //meshobjnap.position.y = 1;
-        meshobjwirenap.position.y = .3;
+        meshobjwirenap.position.y = .7;
 
         meshobjwirenap.add(meshobjnap);
         meshtrunggian.add(meshobjwirenap);
@@ -688,11 +725,12 @@ slidedata.oninput = function() {
     controlarraydata =[];
     datadragable=[];
 
-    GLTFloaddata('static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, planeszheight/2, planegroup.position.y-1.5, -planeszwidth/2, 'concac', true, true, 0);
+    if (Number(slidedata.value)%2 != 0) {
+    GLTFloaddata('static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, 0, planegroup.position.y-1.5, 0, 'concac', true, true, 0);}
     
 }
 
-GLTFloaddata('static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, planeszheight/2, planegroup.position.y-1.5, -planeszwidth/2, 'concac', true, true, 0);
+GLTFloaddata('static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, 0, planegroup.position.y-1.5, 0, 'concac', true, true, 0);
 
 function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot, dragornot, thutu) {
     const loader = new GLTFLoader();
@@ -866,3 +904,4 @@ function disposeHierarchy (node, callback)
         callback (child);
     }
 }
+
