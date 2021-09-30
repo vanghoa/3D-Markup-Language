@@ -152,7 +152,7 @@ let b = 2;
 objectload('static/SOUND.ply', sangbongmat, false, true, 0, 0, 5, b, b, b, "cac");
 objectload('static/CONSTRAINT.ply', sangbongmat1, false, true, 5, 0, 0, a, a, a, "cac");
 objectload('static/PLACE.ply', sangbongmat, false, true, -5, 0, 0, a, a, a, "cac");
-objectload('static/SCENT.ply', sangbongmat, false, true, 10, 0, 0, a, a, a, "cac");
+objectload('static/SCENT.ply', sangbongmat, false, true, 13, 0, 0, a, a, a, "cac");
 
 //drag atb
 const controldrag = new DragControls(objectiondrag, camera, canvas);
