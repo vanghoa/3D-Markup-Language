@@ -95,7 +95,7 @@ const verybasicmat = new THREE.MeshBasicMaterial( {
 } );
 
 const vmhmatsurface = new THREE.MeshBasicMaterial( {
-	color: 0xff0000,
+	color: 0x999999,
     transparent: true,
     opacity: .3
 } );
@@ -144,6 +144,21 @@ const sangbongmat = new THREE.MeshPhysicalMaterial({
     envMap: texture
 })
 
+const legomat = new THREE.MeshPhysicalMaterial({
+    color: 0x2a9df4, 
+    //side: THREE.DoubleSide,
+    //shadowSide: THREE.DoubleSide,
+    metalness: 0,
+    roughness: 0.3,
+    transparent: true,
+    opacity: 0.8,
+    //depthWrite: false,
+    //depthTest: false,
+    transmission: 0.5,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0,
+})
+
 // Mesh
 
 // OBJLoad 
@@ -166,11 +181,39 @@ planegroup.position.set(0,-frustum/2,0);
 
 scene.add(planegroup);
 
-//Data
+//atb
 
-//objectload('static/Tree1.ply', sangbongmat, true, true, planeszheight/2, planegroup.position.y, -planeszwidth/2, .75, .75, .75, 1);
+objectload('static/LEGO-copy.ply', legomat, false, true, -planeszheight/2, planegroup.position.y + 1, -planeszwidth/2, 1.5, 1.5, 1.5, "atb");
+objectload('static/LEGO-cut.ply', legomat, false, true, -planeszheight/2, planegroup.position.y + 2, -planeszwidth/2, 1.5, 1.5, 1.5, "atb");
 
+//drag atb
+const controldrag = new DragControls(objectiondrag, camera, canvas);
 
+controldrag.addEventListener( 'dragstart', function ( event ) {
+    
+	event.object.material.transparent = false;
+    controls.enabled = false;
+    for (let s = 0; s <= controlarray.length - 1; s++){
+            controlarray[s].enabled = false;
+    }
+    
+    for (let s = 0; s <= controlarraydata.length - 1; s++){
+        controlarraydata[s].enabled = false;
+}
+} );
+
+controldrag.addEventListener( 'dragend', function ( event ) {
+
+	event.object.material.transparent = true;
+    controls.enabled = true;
+    for (let s = 0; s <= controlarray.length - 1; s++){
+            controlarray[s].enabled = true;
+    }
+    
+    for (let s = 0; s <= controlarraydata.length - 1; s++){
+        controlarraydata[s].enabled = true;
+}
+} );
 
 // Anchor Container
 anchortong.position.set(0,planegroup.position.y + .5, planeszwidth/2 - .5);
@@ -460,7 +503,8 @@ const tick = () =>
 
     // Line for vmh
     if (vmhhelpercheck) {linevmh();}
-    else {scene.remove(pointline);}
+    else {scene.remove(pointline);
+        scene.remove(pointmesh);}
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick);
@@ -468,7 +512,6 @@ const tick = () =>
 
 /////////////////////////////////////////////////////////// DRAG
 /**/ 
-const controldrag = new DragControls(objectiondrag, camera, canvas);
 //controldrag.transformGroup = true;
 
 
@@ -523,31 +566,7 @@ controldragcontainer.addEventListener( 'dragend', function ( event ) {
 */
 
 /////////////////
-controldrag.addEventListener( 'dragstart', function ( event ) {
-    
-	event.object.material.transparent = false;
-    controls.enabled = false;
-    for (let s = 0; s <= controlarray.length - 1; s++){
-            controlarray[s].enabled = false;
-    }
-    
-    for (let s = 0; s <= controlarraydata.length - 1; s++){
-        controlarraydata[s].enabled = false;
-}
-} );
 
-controldrag.addEventListener( 'dragend', function ( event ) {
-
-	event.object.material.transparent = true;
-    controls.enabled = true;
-    for (let s = 0; s <= controlarray.length - 1; s++){
-            controlarray[s].enabled = true;
-    }
-    
-    for (let s = 0; s <= controlarraydata.length - 1; s++){
-        controlarraydata[s].enabled = true;
-}
-} );
 /**
  * OBJLoad
  */
@@ -658,7 +677,22 @@ function wireframeload(linkhop, linknap, xoayornot, diemx, diemy, diemz, hslhue,
     //return meshcontainer;
 }
 
-GLTFloaddata('static/Tree.glb', 2.5, 2.5, 2.5, planeszheight/2, planegroup.position.y-1.5, -planeszwidth/2, 1, true, true, 0);
+const slidedata = document.querySelector("#slidedata");
+
+slidedata.oninput = function() {
+    for (let i = 0; i <= (scene.children.length - 1); i++) {
+        if (scene.children[i].name === "concac") { 
+            scene.remove(scene.children[i]);
+         }
+    }
+    controlarraydata =[];
+    datadragable=[];
+
+    GLTFloaddata('static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, planeszheight/2, planegroup.position.y-1.5, -planeszwidth/2, 'concac', true, true, 0);
+    
+}
+
+GLTFloaddata('static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, planeszheight/2, planegroup.position.y-1.5, -planeszwidth/2, 'concac', true, true, 0);
 
 function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot, dragornot, thutu) {
     const loader = new GLTFLoader();
@@ -666,6 +700,7 @@ function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot
         gltf.scene.scale.set(sclx,scly,sclz);
         gltf.scene.position.set(vtx,vty,vtz);
         gltf.scene.name = String(identity);
+        //
         scene.add(gltf.scene);
         if (xoayornot) { objectionxoay.push(gltf.scene); }
 
@@ -750,7 +785,7 @@ document.addEventListener('keydown', function (e) {
 
 function chucnangcut() {
     for (let i = 0; i <= (scene.children.length - 1); i++) {
-        if (scene.children[i].name === "1") {
+        if (scene.children[i].name === "concac") {
             scene.children[i].visible = !scene.children[i].visible;
             //scene.children[i].traverse((child) => {
                 //if (child.isMesh) {
