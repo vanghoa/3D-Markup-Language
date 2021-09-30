@@ -28,7 +28,7 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-scene.background = new THREE.Color(0x999999);
+//scene.background = new THREE.Color(0x999999);
 
 /**
  * Camera
@@ -49,6 +49,9 @@ camera.lookAt(0,0,0);
 scene.add(camera);
 controls.update()
 
+document.querySelector('#toggle').addEventListener('click', function(){
+  scene.background = new THREE.Color(0x999999);
+})
 
 // Materials
 const verybasicmat = new THREE.MeshBasicMaterial( {
@@ -216,7 +219,7 @@ window.addEventListener('resize', () =>
  */
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    //alpha: true,
+    alpha: true,
     antialias: true
 })
 renderer.setSize(sizes.width, sizes.height)
