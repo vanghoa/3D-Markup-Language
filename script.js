@@ -658,7 +658,7 @@ function wireframeload(linkhop, linknap, xoayornot, diemx, diemy, diemz, hslhue,
     //return meshcontainer;
 }
 
-GLTFloaddata('static/tree.glb', 2.5, 2.5, 2.5, planeszheight/2, planegroup.position.y-1.5, -planeszwidth/2, 1, true, true, 0);
+GLTFloaddata('static/Tree.glb', 2.5, 2.5, 2.5, planeszheight/2, planegroup.position.y-1.5, -planeszwidth/2, 1, true, true, 0);
 
 function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot, dragornot, thutu) {
     const loader = new GLTFLoader();
