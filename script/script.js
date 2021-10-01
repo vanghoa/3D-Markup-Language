@@ -3,12 +3,34 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.132.2/build/three.module
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js';
 import { DragControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/DragControls.js';
 import { PLYLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/PLYLoader.js';
-import { LineMaterial } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/LineMaterial.js';
 import { ConvexGeometry } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/geometries/ConvexGeometry.js';
-import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js';
-/*import { Line2 } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/Line2.js';
+import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js'; 
+
+/////////////////////////////
+/*
+import * as THREE from '../three.js/build/three.module.js';
+import { OrbitControls } from '../three.js/examples/jsm/controls/OrbitControls.js';
+import { DragControls } from '../three.js/examples/jsm/controls/DragControls.js';
+import { PLYLoader } from '../three.js/examples/jsm/loaders/PLYLoader.js';
+import { ConvexGeometry } from '../three.js/examples/jsm/geometries/ConvexGeometry.js';
+import { GLTFLoader } from '../three.js/examples/jsm/loaders/GLTFLoader.js';
+*/
+/////////////////////////////
+/*
+//import * as THREE from '../node_modules/three/build/three.module.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js';
+import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+*/
+/////////////////////////////
+/*
+import { Line2 } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/Line2.js';
 import { LineMaterial } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/LineMaterial.js';
-import { LineGeometry } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/LineGeometry.js';*/
+import { LineGeometry } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/LineGeometry.js';
+*/
+/////////////////////////////
 //import * as dat from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/libs/dat.gui.module.js';
 
 let objectionxoay = [];
@@ -197,10 +219,13 @@ const legomat = new THREE.MeshPhysicalMaterial({
 // Ambient
 
 // Mat Phang
-const planeszwidth = 2/3*aspect*frustum;
-const planeszheight = aspect*frustum;
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth), new THREE.MeshStandardMaterial({color: 0x323232, side: THREE.FrontSide, roughness: 0}));
+let aspectplane = aspect;
+if (aspect < 1) {aspectplane = 1/aspect}
+if (sizes.width < sizes.height) {aspectplane *= 3/4}
 
+const planeszwidth = aspectplane*frustum;
+const planeszheight = aspectplane*frustum;
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth), new THREE.MeshStandardMaterial({color: 0x323232, side: THREE.FrontSide, roughness: 0}));
 
 const planewireframe = new THREE.WireframeGeometry(new THREE.PlaneGeometry(planeszheight, planeszwidth));
 
@@ -281,7 +306,7 @@ function generateanchor(soanchorx) {
             ///////////////////
 
             for (let dem = -Math.floor(soanchorx/2), colordem = 0, nameanc = 0; dem <= soanchorx -1 -Math.floor(soanchorx/2); dem++, colordem+=.2, nameanc++) {
-                wireframeload('./static/CAINOI.ply', './static/CAINAP.ply', false, dem*2.3,1,0, colordem, nameanc);
+                wireframeload('./static/CAINOI2.ply', './static/CAINAP.ply', false, dem*2.3,1,0, colordem, nameanc);
             }
             ////////// FUCK2
             for (let k = 0; k <= controlarray.length - 1; k++) 
@@ -409,18 +434,18 @@ pointLight2.position.set(0,2,5);
 scene.add(pointLight2);
 
 //// Light 1
-const pointlight1 = new THREE.PointLight(0xFFFFFF, 1, 0, 1);
+const pointlight1 = new THREE.PointLight(0x00ff00, 1, 0, 1);
 pointlight1.position.set(0,2,-5);
 scene.add(pointlight1);
 
 //// Light 3
 
-const pointLight3 = new THREE.PointLight(0x000ff, 1, 0, 1)
+const pointLight3 = new THREE.PointLight(0xff0000, 1, 0, 1)
 pointLight3.position.set(5,2,0);
 scene.add(pointLight3);
 
 //// Light 4
-const pointlight4 = new THREE.PointLight(0xFFFFFF, 1, 0, 1);
+const pointlight4 = new THREE.PointLight(0xffffff, 1, 0, 1);
 pointlight4.position.set(-5,2,0);
 scene.add(pointlight4);
 
@@ -488,8 +513,8 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
+    // Travel
     if (tanbien) {texturemat.opacity-=0.01;}
-    
     if (hienra) {texturemat.opacity+=0.01;}
 
     // Update objects
@@ -634,11 +659,21 @@ slidedata.oninput = function() {
 
         GLTFloaddata('./static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, 0, planegroup.position.y-1.5, 0, 'concac', true, true, 0);
         cooloff = true;
-    } 
 
-    setTimeout(function(){
-        cooloff = false;
-    }, 2000);
+        document.querySelector('#data').innerHTML = 'Chọn data (chờ 2 giây rồi kéo lại nha &#128549)';
+        console.log(slidedata.disabled);
+        slidedata.disabled = true;
+
+        setTimeout(function(){
+            document.querySelector('#data').innerHTML = 'Chọn data (chờ 1 giây rồi kéo lại nha &#128549)';
+        }, 1000);
+    
+        setTimeout(function(){
+            document.querySelector('#data').innerHTML = 'Chọn data';
+            cooloff = false;
+            slidedata.disabled = false;
+        }, 2000);
+    } 
 
 }
 
