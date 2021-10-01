@@ -4,14 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Ngon Ngu</title>
-<!---
-    <script src="https://unpkg.com/three/build/three.js"></script>
-    <script src="https://unpkg.com/dat.gui/build/dat.gui.min.js"></script>
-    <script src="https://unpkg.com/three/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://unpkg.com/three/examples/js/controls/DragControls.js"></script>
--->
-    <script type="module" src="script.js"></script>
+    <title>Demo Ngôn Ngữ</title>
+    <script type="module" src="script/script.js"></script>
     <style>
         *
         {
@@ -39,12 +33,7 @@
             left: 0;
             outline: none;
             z-index: 0;
-        }
-
-        section 
-        {
-            height: 100vh;
-        }       
+        }     
         
         .container {
             position: relative;
@@ -71,17 +60,40 @@
             background-color:black;
             width: fit-content;
         }
+
+        div.btnview > button {
+            width: 5vmax;
+        }        
+        div.btnvmh > button {
+            width: 10vmax;
+        }
+
+        div.btnview, div.btnvmh {
+            margin-left: -3px;
+        }
+
+
+        button {
+            line-break: loose;
+            font-size: .7rem;
+        }
+
+        input {
+            height: .7rem;
+        }
     </style>
 </head>
 <body>
         <div class="container">
             <p>Biến góc nhìn</p>
-            <button type="button" id="rotx"> phải </button>
-            <button type="button" id="rot-x"> trái </button> <br>
-            <button type="button" id="roty"> trên (cẩn thận di chuyển nhầm cái nắp) </button>
-            <button type="button" id="rot-y"> dưới </button> <br>
-            <button type="button" id="rotz"> trước </button>
-            <button type="button" id="rot-z"> sau </button> <br>
+            <div class="btnview">
+                <button type="button" id="rotx"> phải </button>
+                <button type="button" id="rot-x"> trái </button> <br>
+                <button type="button" id="roty"> trên </button>
+                <button type="button" id="rot-y"> dưới </button> <br>
+                <button type="button" id="rotz"> trước </button>
+                <button type="button" id="rot-z"> sau </button> <br>
+            </div>
         </div>
 
         <div class="container">
@@ -92,30 +104,36 @@
 
         <div class="container">
             <p>Chọn vùng mã hóa</p>
-            <button type="button" id="kickhoatvmh">VMH phức tạp</button>
-            <div>
-                <input type="range" min="0" max="4" value="2" step="1" class="slider" id="slidevmh">
+            <div class="btnvmh">
+                <button type="button" id="kickhoatvmh">VMH phức tạp</button>
+                <div>
+                    <input type="range" min="0" max="4" value="2" step="1" class="slider" id="slidevmh">
+                </div>
+                <button type="button" id="vmhrect">VMH đơn giản</button> </br>
+                <button type="button" id="vmhtri">VMH đơn giản hơn</button> </br>
+                <button type="button" id="vmhxoa" style="background-color:hotpink">Xóa VMH</button> </br>
+                <button type="button" id="togglehelper" style="background-color: #0026fc; color: white;">VMH helper</button> <br>
             </div>
-            <button type="button" id="vmhrect">VMH đơn giản</button> </br>
-            <button type="button" id="vmhtri">VMH đơn giản hơn</button> </br>
-            <button type="button" id="vmhxoa" style="background-color:hotpink">Xóa VMH</button> </br>
-            <button type="button" id="togglehelper" style="background-color: #0026fc; color: white;">VMH helper</button> <br>
         </div>
 
         <div class="container">
-            <p>Chọn data</p>
+            <p>Chọn data (chờ 2 giây rồi kéo lại nha &#128549)</p>
             <div>
-                <input type="range" min="1" max="11" value="1" step="1" class="slider" id="slidedata">
+                <input type="range" min="1" max="11" value="1" step="2" class="slider" id="slidedata">
             </div>
         </div>
 
         <div class="container">
             <p>Di chuyển đến 1 địa điểm khác </p> 
-            <button type="button" id="dichuyen">đến nhà a M</button> </br>
+            <div class="btnvmh">
+                <button type="button" id="dichuyen">đến nhà a M</button> </br>
+            </div>
         </div>
 
         <div class="containerabso">
-            <button type="button" id="xoamoithu">DELETE MEMORY :((</button>
+            <div class="btnvmh">
+                <button type="button" id="xoamoithu">DELETE MEMORY :((</button>
+            </div>
         </div>
 
         

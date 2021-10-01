@@ -39,7 +39,7 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-let texture = new THREE.TextureLoader().load('static/Street View 360 0.jpg');
+let texture = new THREE.TextureLoader().load('./static/Street View 360 0.jpg');
 let texturemat = new THREE.MeshBasicMaterial({map: texture, transparent: true});
 let geoenv = new THREE.SphereGeometry(30,60,40);
 geoenv.scale(-1,1,1);
@@ -66,7 +66,7 @@ function teleport(maybay) {
         scene.remove(meshenv);
         tanbien = false;
 
-        texture = new THREE.TextureLoader().load('static/Street View 360 '+ maybay + '.jpg');
+        texture = new THREE.TextureLoader().load('./static/Street View 360 '+ maybay + '.jpg');
         texturemat = new THREE.MeshBasicMaterial({map: texture, transparent: true, opacity: 0});
 
         geoenv = new THREE.SphereGeometry(30,60,40);
@@ -98,7 +98,7 @@ scene.background = new THREE.CubeTextureLoader()
 	] );
 */
 //environment
-//scene.background = new THREE.Color(0x999999);
+scene.background = new THREE.Color(0xffffff);
 
 /**
  * Camera
@@ -108,6 +108,8 @@ let aspect = sizes.width / sizes.height;
 const frustum = 10;
 const camerakhoangcach = 30;
 const camera = new THREE.OrthographicCamera(-aspect * frustum, aspect * frustum, frustum, -frustum, 1, 1000)
+camera.zoom = .5;
+camera.updateProjectionMatrix();
 
 // Controls Orbit
 const controls = new OrbitControls(camera, canvas)
@@ -176,36 +178,28 @@ const sangbongmat = new THREE.MeshPhysicalMaterial({
     transmission: 1.0,
     clearcoat: 1.0,
     clearcoatRoughness: 0,
-    envMap: texture
 })
 
 const legomat = new THREE.MeshPhysicalMaterial({
-    color: 0x2a9df4, 
+    color: 0xbfbf, 
+    emissive: 0x383838,
     //side: THREE.DoubleSide,
     //shadowSide: THREE.DoubleSide,
     metalness: 0,
-    roughness: 0,
+    roughness: .5,
     transparent: true,
-    opacity: 1,
-    //depthWrite: false,
-    //depthTest: false,
-    transmission: 0.2,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0,
-    envMap: texture
+    opacity: .7,
+    transmission: .8
 })
 
 // Mesh
 
-// OBJLoad 
-let amb = {
-    //sound: objectload('static/Tree.ply', sangbongmat, true)
-};
+// Ambient
 
 // Mat Phang
 const planeszwidth = 2/3*aspect*frustum;
 const planeszheight = aspect*frustum;
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth), new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.FrontSide}));
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth), new THREE.MeshStandardMaterial({color: 0x323232, side: THREE.FrontSide, roughness: 0}));
 
 
 const planewireframe = new THREE.WireframeGeometry(new THREE.PlaneGeometry(planeszheight, planeszwidth));
@@ -219,8 +213,8 @@ scene.add(planegroup);
 
 //atb
 
-objectload('static/LEGO-copy.ply', legomat, false, true, -planeszheight/2, planegroup.position.y + 1, -planeszwidth/2, 1.5, 1.5, 1.5, "atb");
-objectload('static/LEGO-cut.ply', legomat, false, true, -planeszheight/2, planegroup.position.y + 2, -planeszwidth/2, 1.5, 1.5, 1.5, "atb");
+objectload('./static/LEGO-copy.ply', legomat, false, true, -planeszheight/2, planegroup.position.y + 1, -planeszwidth/2, 1.5, 1.5, 1.5, "atb");
+objectload('./static/LEGO-cut.ply', legomat, false, true, -planeszheight/2, planegroup.position.y + 2, -planeszwidth/2, 1.5, 1.5, 1.5, "atb");
 
 //drag atb
 const controldrag = new DragControls(objectiondrag, camera, canvas);
@@ -287,23 +281,15 @@ function generateanchor(soanchorx) {
             ///////////////////
 
             for (let dem = -Math.floor(soanchorx/2), colordem = 0, nameanc = 0; dem <= soanchorx -1 -Math.floor(soanchorx/2); dem++, colordem+=.2, nameanc++) {
-                wireframeload('static/CAINOI.ply', 'static/CAINAP.ply', false, dem*2.3,1,0, colordem, nameanc);
+                wireframeload('./static/CAINOI.ply', './static/CAINAP.ply', false, dem*2.3,1,0, colordem, nameanc);
             }
             ////////// FUCK2
             for (let k = 0; k <= controlarray.length - 1; k++) 
             {
                 controlarray[k].addEventListener('dragstart', function(event){
-                    event.object.material.transparent = false;
-                    for (let s = 0; s <= controlarray.length - 1; s++){
-                        if (s != k) {
-                            controlarray[s].enabled = false;
-                        }
-                    }
-                    controls.enabled = false;
                     controldrag.enabled = false;
-                    for (let s = 0; s <= controlarraydata.length - 1; s++){
-                            controlarraydata[s].enabled = false;
-                    }
+                    event.object.material.transparent = false;
+                    disenabledrag(controlarray /**array cua ban */, k, controlarraydata /**cac array khac */, false);
                 });
             
                 controlarray[k].addEventListener('drag', function(event){
@@ -317,22 +303,9 @@ function generateanchor(soanchorx) {
                 }); 
             
                 controlarray[k].addEventListener('dragend', function(event){
-                    event.object.material.transparent = true;
-                    for (let s = 0; s <= controlarray.length - 1; s++){
-                        if (s != k) {
-                            controlarray[s].enabled = true;
-                        }
-                    }
-                    controls.enabled = true;
                     controldrag.enabled = true;
-                
-                    let tramcamqua = new THREE.Vector3();
-                    event.object.getWorldPosition(tramcamqua);
-                    anchposition[k] = tramcamqua;
-
-                    for (let s = 0; s <= controlarraydata.length - 1; s++){
-                            controlarraydata[s].enabled = true;
-                    }
+                    event.object.material.transparent = true;
+                    disenabledrag(controlarray /**array cua ban */, k, controlarraydata /**cac array khac */, true);
                     /*
                     anchcolor[k] = event.object.material.color.r;
                     anchcolor[(k+1)] = event.object.material.color.g;
@@ -429,42 +402,31 @@ function linevmh() {
     scene.add(pointline);
 }
 
-// Attribute
-//const atb1 = objectload('static/hop-to-nap.ply', verybasicmat, false, true, 0, 0, 0, .5, .5, .5, 2)
-
-
 //// Light 2
 
-const pointLight2 = new THREE.PointLight(0x000ff, 8)
-pointLight2.position.set(0.85,0.48,0.48);
-//scene.add(pointLight2);
+const pointLight2 = new THREE.PointLight(0x000ff, 1, 0, 1)
+pointLight2.position.set(0,2,5);
+scene.add(pointLight2);
 
-//const pointLightHelper2 = new THREE.PointLightHelper(pointLight2, .3);
-//scene.add(pointLightHelper2);
+//// Light 1
+const pointlight1 = new THREE.PointLight(0xFFFFFF, 1, 0, 1);
+pointlight1.position.set(0,2,-5);
+scene.add(pointlight1);
 
-//const light2 = gui.addFolder('Light 2');
+//// Light 3
 
-//light2.add(pointLight2.position, 'y').min(-3).max(3).step(0.01);
-//light2.add(pointLight2.position, 'x').min(-6).max(3).step(0.01);
-//light2.add(pointLight2.position, 'z').min(-3).max(3).step(0.01);
-//light2.add(pointLight2, 'intensity').min(0).max(20).step(1);
+const pointLight3 = new THREE.PointLight(0x000ff, 1, 0, 1)
+pointLight3.position.set(5,2,0);
+scene.add(pointLight3);
 
-//const light2color = {
-//    color: 0xff0000
-//}
+//// Light 4
+const pointlight4 = new THREE.PointLight(0xFFFFFF, 1, 0, 1);
+pointlight4.position.set(-5,2,0);
+scene.add(pointlight4);
 
-//light2.addColor(light2color, 'color').onChange(() => {
-//    pointLight2.color.set(light2color.color);
-//}) 
-
-//// Ambient Light
-const ambient = new THREE.AmbientLight( 0xffffff, .3 );
-scene.add( ambient );
-
-//// DirLight1
-const light = new THREE.DirectionalLight(0xFFFFFF, 3);
-light.position.set(-1, 2, .1);
-scene.add(light);
+// Ambient Light
+const ambientlight1 = new THREE.AmbientLight(0x8f388d, 1);
+scene.add(ambientlight1);
 
 
 ///////////////////////////////////////////////////////////
@@ -552,60 +514,6 @@ const tick = () =>
 
 /////////////////////////////////////////////////////////// DRAG
 /**/ 
-//controldrag.transformGroup = true;
-
-
-//const controldragcontainer = new DragControls(objectiondragcontainer, camera, canvas);
-//controldrag.transformGroup = true;
-
-
-
-
-
-
-
-
-
-
-
-// add event listener to highlight dragged objects
-/*
-let wrld = new THREE.Vector3();
-let wrld2 = new THREE.Vector3();
-let wrld3 = new THREE.Vector3();
-
-controldragcontainer.addEventListener( 'dragstart', function ( event ) {
-    
-	event.object.material.transparent = false;
-    controls.enabled = false;
-    controldrag.enabled = false;
-    event.object.getWorldPosition(wrld);
-    console.log(wrld);
-    anchor[2].getWorldPosition(wrld2);
-    console.log(wrld2);  
-
-    let anchorfake = anchortong.getObjectByName('2');
-    anchorfake.getWorldPosition(wrld3);
-    console.log(wrld3);
-} );
-
-controldragcontainer.addEventListener( 'dragend', function ( event ) {
-
-	event.object.material.transparent = true;
-    controls.enabled = true;
-    controldrag.enabled = true;
-    event.object.getWorldPosition(wrld);
-    console.log(wrld);
-    anchor[2].getWorldPosition(wrld2);
-    console.log(wrld2);
-
-    let anchorfake = anchortong.getObjectByName('2');
-    anchorfake.getWorldPosition(wrld3);
-    console.log(wrld3);
-} );
-*/
-
-/////////////////
 
 /**
  * OBJLoad
@@ -614,26 +522,6 @@ function objectload(link, vatlieu, xoayornot, dragornot, vtx, vty, vtz, scl1, sc
     let loader = new PLYLoader()
 
     loader.load(link, (objfile) => {
-        //let objmesh = new THREE.Mesh(objfile, material);
-        //objfile.traverse( function ( child ) {
-            //if (child.isMesh) {
-                //child.material = new THREE.MeshPhysicalMaterial({
-                    //color: 0xffffff, 
-                    //metalness: 0,
-                    //roughness: 0,
-                    //reflectivity: 1,
-                    //transparent: true,
-                    //emissive: 0,
-                    //transmission: 1.0,
-                    //side: THREE.DoubleSide,
-                    //clearcoat: 1.0,
-                    //clearcoatRoughness: 0,
-                    //fog: true  
-                //});
-            //}
-        //})
-        //scene.add(objfile);
-        //console.log(objectiondrag.length);
 
         objfile.computeVertexNormals();
 
@@ -658,7 +546,6 @@ function wireframeload(linkhop, linknap, xoayornot, diemx, diemy, diemz, hslhue,
     let meshobjwirehop;
     let meshobjnap;
     let meshobjwirenap;
-    let objectiondragsub = [];
     const vatlieuhop = new THREE.MeshBasicMaterial( {
         transparent: true,
         opacity: 1
@@ -676,7 +563,6 @@ function wireframeload(linkhop, linknap, xoayornot, diemx, diemy, diemz, hslhue,
         objfile.computeVertexNormals();
         meshobjnap = new THREE.Mesh(objfile, wireframemat);
         meshobjwirenap = new THREE.Mesh(objfile, vatlieunap);
-        //meshobjnap.position.y = 1;
         meshobjwirenap.position.y = .7;
 
         meshobjwirenap.add(meshobjnap);
@@ -704,7 +590,6 @@ function wireframeload(linkhop, linknap, xoayornot, diemx, diemy, diemz, hslhue,
     meshcontainer.position.set(diemx,diemy,diemz);
 
     if (xoayornot) { objectionxoay.push(meshcontainer); }
-    //objectiondragcontainer.push(objectiondragsub.push(meshcontainer));
 
     anchortong.add(meshcontainer);
 /// pos
@@ -718,22 +603,46 @@ function wireframeload(linkhop, linknap, xoayornot, diemx, diemy, diemz, hslhue,
 }
 
 const slidedata = document.querySelector("#slidedata");
+let cooloff = false;
 
 slidedata.oninput = function() {
-    for (let i = 0; i <= (scene.children.length - 1); i++) {
-        if (scene.children[i].name === "concac") { 
-            scene.remove(scene.children[i]);
-         }
-    }
-    controlarraydata =[];
-    datadragable=[];
+    if (!cooloff) {
+        datadragable.forEach((cac) => {
+            cac.forEach((lon) => {
+                let indec = 0;
+                lon.traverse((child) => {
+                    if (child.isMesh) {
+                        child.geometry.dispose();
+                        child.material.dispose();
+                    }
+                })
+            })
+        })
 
-    if (Number(slidedata.value)%2 != 0) {
-    GLTFloaddata('static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, 0, planegroup.position.y-1.5, 0, 'concac', true, true, 0);}
-    
+        for (let i = 0; i <= (scene.children.length - 1); i++) {
+            if (scene.children[i].name == "concac") { 
+                scene.remove(scene.children[i]);
+            }
+        }
+
+        controlarraydata.forEach((elem) => {
+            elem.dispose();
+        })    
+
+        controlarraydata=[];
+        datadragable=[];
+
+        GLTFloaddata('./static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, 0, planegroup.position.y-1.5, 0, 'concac', true, true, 0);
+        cooloff = true;
+    } 
+
+    setTimeout(function(){
+        cooloff = false;
+    }, 2000);
+
 }
 
-GLTFloaddata('static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, 0, planegroup.position.y-1.5, 0, 'concac', true, true, 0);
+GLTFloaddata('./static/data/'+ slidedata.value + '.glb', 2.5, 2.5, 2.5, 0, planegroup.position.y-1.5, 0, 'concac', true, true, 0);
 
 function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot, dragornot, thutu) {
     const loader = new GLTFLoader();
@@ -749,32 +658,15 @@ function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot
             datadragable.push([gltf.scene]);
             controlarraydata.push(new DragControls(datadragable[thutu], camera, canvas));
             controlarraydata[thutu].transformGroup = true;
+
             controlarraydata[thutu].addEventListener( 'dragstart', function ( event ) {
                 controldrag.enabled = false;
-                //event.object.material.transparent = false;
-                controls.enabled = false;
-                for (let s = 0; s <= controlarray.length - 1; s++){
-                        controlarray[s].enabled = false;
-                }
-                for (let s = 0; s <= controlarraydata.length - 1; s++){
-                    if (s != thutu) {
-                        controlarraydata[s].enabled = false;
-                    }
-                }
+                disenabledrag(controlarraydata /**array cua ban */, thutu, controlarray /**cac array khac */, false);
             } );
             
             controlarraydata[thutu].addEventListener( 'dragend', function ( event ) {
-                controldrag.enabled = false;
-                //event.object.material.transparent = true;
-                controls.enabled = true;
-                for (let s = 0; s <= controlarray.length - 1; s++){
-                        controlarray[s].enabled = true;
-                }
-                for (let s = 0; s <= controlarraydata.length - 1; s++){
-                    if (s != thutu) {
-                        controlarraydata[s].enabled = true;
-                    }
-                }
+                controldrag.enabled = true;
+                disenabledrag(controlarraydata /**array cua ban */, thutu, controlarray /**cac array khac */, true);
             } );
 
          }
@@ -782,6 +674,18 @@ function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot
     })
 }
 
+function disenabledrag(arrayofu, thutunao, otherarray, enordis) {
+    controls.enabled = enordis;
+    for (let s = 0; s <= arrayofu.length - 1; s++){
+        if (s != thutunao) {
+            arrayofu[s].enabled = enordis;
+        }
+    }
+    for (let s = 0; s <= otherarray.length - 1; s++){
+            otherarray[s].enabled = enordis;
+    }
+    
+}
 
 /**
  * Doi Goc Nhin
@@ -815,6 +719,7 @@ function numbercontainer() {
 /**/
 //console.log(anchortong);
 
+// Chuc nang cut
 document.addEventListener('keydown', function (e) {
     if (e.code === "KeyB") {  
         chucnangcut();
