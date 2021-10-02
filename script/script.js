@@ -61,8 +61,13 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-let texture = new THREE.TextureLoader().load('./static/Street View 360 0.jpg');
-let texturemat = new THREE.MeshBasicMaterial({map: texture, transparent: true});
+let texture = [];
+
+for (let t = 0; t <= 3; t++) {
+    texture.push(new THREE.TextureLoader().load('./static/Street View 360 '+ String(t) + '.jpg'));
+}
+
+let texturemat = new THREE.MeshBasicMaterial({map: texture[0], transparent: true});
 let geoenv = new THREE.SphereGeometry(30,60,40);
 geoenv.scale(-1,1,1);
 let meshenv = new THREE.Mesh(geoenv, texturemat);
@@ -71,8 +76,9 @@ let tanbien = false;
 let hienra = false;
 scene.add(meshenv)
 
-document.querySelector('#dichuyen').addEventListener('click', function(){
-    teleport(String(dibay));
+const dichuyenbtn = document.querySelector('#dichuyen');
+dichuyenbtn.addEventListener('click', function(){
+    teleport(dibay);
     dibay++;
     if (dibay == 3) {document.querySelector('#dichuyen').innerHTML = 'đến nhà diệu li';}
     if (dibay > 3) {dibay = 0; document.querySelector('#dichuyen').innerHTML = 'quay lại nhà BA nhá';}
@@ -81,29 +87,19 @@ document.querySelector('#dichuyen').addEventListener('click', function(){
 })
 
 function teleport(maybay) {
-
+    dichuyenbtn.disabled = true;
     tanbien = true;
 
     setTimeout(function(){
-        scene.remove(meshenv);
         tanbien = false;
-
-        texture = new THREE.TextureLoader().load('./static/Street View 360 '+ maybay + '.jpg');
-        texturemat = new THREE.MeshBasicMaterial({map: texture, transparent: true, opacity: 0});
-
-        geoenv = new THREE.SphereGeometry(30,60,40);
-
-        geoenv.scale(-1,1,1);
-
-        meshenv = new THREE.Mesh(geoenv, texturemat);
-
-        scene.add(meshenv) 
+        meshenv.material.map = texture[maybay];
         hienra = true;
 
     },2000);
 
     setTimeout(function(){
         hienra = false;
+        dichuyenbtn.disabled = false;
     },4000);
 }
 
@@ -120,7 +116,7 @@ scene.background = new THREE.CubeTextureLoader()
 	] );
 */
 //environment
-scene.background = new THREE.Color(0xffffff);
+scene.background = new THREE.Color(0xb5b5b5);
 
 /**
  * Camera
@@ -211,10 +207,8 @@ const legomat = new THREE.MeshPhysicalMaterial({
     roughness: .5,
     transparent: true,
     opacity: .7,
-    transmission: .8
+    transmission: .4
 })
-
-// Mesh
 
 // Ambient
 
@@ -304,7 +298,6 @@ function generateanchor(soanchorx) {
             //anchcolor = [];
 
             ///////////////////
-
             for (let dem = -Math.floor(soanchorx/2), colordem = 0, nameanc = 0; dem <= soanchorx -1 -Math.floor(soanchorx/2); dem++, colordem+=.2, nameanc++) {
                 wireframeload('./static/CAINOI2.ply', './static/CAINAP.ply', false, dem*2.3,1,0, colordem, nameanc);
             }
@@ -485,7 +478,7 @@ window.addEventListener('resize', () =>
  */
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    //alpha: true,
+    alpha: true,
     antialias: true
 })
 renderer.setSize(sizes.width, sizes.height)
