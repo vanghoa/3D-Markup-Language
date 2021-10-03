@@ -287,5 +287,8 @@ function objectload(link, vatlieu, xoayornot, dragornot, vtx, vty, vtz, scl1, sc
     });
 }
 
+// Custom CSS
+canvas.style.pointerEvents = 'none';
+togglenen.style.display = 'none';
 /////////////////////////////////////////////
 tick()

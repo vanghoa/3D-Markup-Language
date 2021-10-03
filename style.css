@@ -1,0 +1,73 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.8vh;
+}
+
+html,
+body
+{
+    height: 100vh;
+    background-color: rgb(255, 255, 255);
+}
+
+body{
+    overflow-x: hidden;
+}
+
+.webgl
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    outline: none;
+    z-index: 0;
+}     
+
+.container {
+    position: relative;
+    padding: 1rem;
+    width: fit-content;
+    z-index: 1;
+}
+
+.container *, .containerabso * {
+    padding: .2rem;
+}
+
+.containerabso {
+    position: absolute;
+    padding: 1rem;
+    width: fit-content;
+    z-index: 1;
+    bottom: 0;
+}
+
+p {
+    font-size: 1rem;
+    color:white;
+    background-color:black;
+    width: fit-content;
+}
+
+
+div.btnview > button {
+    width: 5vmax;
+}        
+div.btnvmh > button {
+    width: 10vmax;
+}
+div.btnview, div.btnvmh {
+    margin-left: -3px;
+}
+
+
+button {
+    line-break: loose;
+}
+
+input {
+    height: 1rem;
+}

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
     <title>Trien64 Lam4</title>
 <!---
     <script src="https://unpkg.com/three/build/three.js"></script>
@@ -13,35 +15,6 @@
 -->
     <script type="module" src="script/scriptdie.js"></script>
     <style>
-        *
-        {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 1vw;
-        }
-
-        html,
-        body
-        {
-            height: 100vh;
-            background-color: rgb(145, 145, 145);
-        }
-
-        body{
-            overflow-x: hidden;
-        }
-
-        .webgl
-        {
-            position: absolute;
-            top: 0;
-            left: 0;
-            outline: none;
-            z-index: 1;
-            pointer-events: none;
-        }
-
         #toggle 
         {
             position: absolute; 
@@ -52,44 +25,54 @@
             width: 100vw;
             height: 100vh;
         }
-
-        .buttoninpage
-        {
-            position: relative;
-            z-index: 2;
-            top: 0;
-            left: 0;
-            padding: .5rem;
-            margin: 2vw;
-        }
-
-        .buttonabsolute
-        {
-            position: absolute;
-            z-index: 2;
-            bottom: 0;
-            right: 0;
-            padding: .5rem;
-            margin: 2vw;
-        }
-
-
-        #background {
-            display: none;
-        }
     </style>
 </head>
 <body>
-    <h1> triển lãm </h1>
-    <canvas class="webgl"></canvas>
     <button type="button" id="toggle" title="It's a button">bật nền</button>
-    <button type="button" class="buttoninpage" id="xoay" title="Rotation"> toggle xoay</button> <br>
-    <button type="button" class="buttoninpage" style="background-color: red; color: white;" id="light0" title="Rotation">toggle red light</button> <br>
-    <button type="button" class="buttoninpage" style="background-color: green; color: white;" id="light1" title="Rotation">toggle green light</button> <br>
-    <button type="button" class="buttoninpage" style="background-color: blue; color: white;" id="light2" title="Rotation">toggle blue light</button> <br>
-    <button type="button" class="buttoninpage" id="light3" title="Rotation">toggle white light</button> <br>
-    <button type="button" class="buttoninpage" id="background" title="Rotation">toggle nền</button> <br>
 
-    <button type="button" class="buttonabsolute" onclick="location.href='index.html'">Demo Ngôn Ngữ</button>
+    <div class="container">
+        <div class="btnvmh">
+            <button type="button" style="background-color: red; color: white;" id="light0" title="Rotation">toggle red light</button> <br>
+        </div>
+    </div>
+ 
+    <div class="container">
+        <div class="btnvmh">   
+            <button type="button" style="background-color: green; color: white;" id="light1" title="Rotation">toggle green light</button> <br>
+        </div>
+    </div>   
+    
+    <div class="container">
+        <div class="btnvmh">   
+            <button type="button" style="background-color: blue; color: white;" id="light2" title="Rotation">toggle blue light</button> <br>
+        </div>
+    </div>      
+    
+    
+    <div class="container">
+        <div class="btnvmh">    
+            <button type="button" style="background-color: white; color: black;" id="light3" title="Rotation">toggle white light</button> <br>
+        </div>
+    </div> 
+
+    <div class="containerabso" style="right: 0; bottom: auto; top: 0;">
+        <div class="btnvmh">
+            <button type="button" id="xoay" title="Rotation"> toggle xoay</button>
+        </div>
+    </div>
+    
+    <div class="containerabso" style="left: 0;">
+        <div class="btnvmh">    
+            <button type="button" id="background" title="Rotation">toggle nền</button>         
+        </div>
+    </div> 
+
+    <div class="containerabso" style="right: 0;">
+        <div class="btnvmh">
+            <button type="button" class="buttonabsolute" onclick="location.href='index.html'">Demo Ngôn Ngữ</button>
+        </div>
+    </div> 
+
+    <canvas class="webgl"></canvas>
 </body>
 </html>
