@@ -81,7 +81,10 @@ const sangbongmat = new THREE.MeshPhysicalMaterial({
 // Mat Phang
 const planeszwidth = 2/3*aspect*frustum;
 const planeszheight = aspect*frustum;
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth), new THREE.MeshBasicMaterial({color: 0x7d7d7d, side: THREE.FrontSide}));
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth), new THREE.MeshBasicMaterial({
+    color: 0x7d7d7d, 
+    side: THREE.FrontSide
+}));
 
 
 const planewireframe = new THREE.WireframeGeometry(new THREE.PlaneGeometry(planeszheight, planeszwidth));
@@ -221,10 +224,12 @@ const clock = new THREE.Clock()
 const tick = () =>
 {      
     if (bgvalue) {
-        scene.background = new THREE.Color(0x545454); 
+        scene.background = new THREE.Color(0x545454);
+        plane.visible = true; 
     }
     else {
         scene.background = null; 
+        plane.visible = false;
     }
 
     // Xoay

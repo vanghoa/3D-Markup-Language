@@ -74,6 +74,7 @@ let meshenv = new THREE.Mesh(geoenv, texturemat);
 let dibay = 1;
 let tanbien = false;
 let hienra = false;
+let lightness = 1;
 scene.add(meshenv)
 
 const dichuyenbtn = document.querySelector('#dichuyen');
@@ -116,7 +117,7 @@ scene.background = new THREE.CubeTextureLoader()
 	] );
 */
 //environment
-scene.background = new THREE.Color(0xb5b5b5);
+scene.background = new THREE.Color("hsl(0, 0%, 100%)");
 
 /**
  * Camera
@@ -478,7 +479,7 @@ window.addEventListener('resize', () =>
  */
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    alpha: true,
+    //alpha: true,
     antialias: true
 })
 renderer.setSize(sizes.width, sizes.height)
@@ -507,8 +508,16 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
 
     // Travel
-    if (tanbien) {texturemat.opacity-=0.01;}
-    if (hienra) {texturemat.opacity+=0.01;}
+    if (tanbien) {
+        texturemat.opacity-=0.01;
+        lightness-=0.01;
+        scene.background.setHSL(0,0,lightness);
+    }
+    if (hienra) {
+        texturemat.opacity+=0.01;
+        lightness+=0.01;
+        scene.background.setHSL(0,0,lightness);
+    }
 
     // Update objects
     objectionxoay.forEach((obj) => {
