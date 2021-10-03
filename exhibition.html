@@ -18,14 +18,14 @@
             margin: 0;
             padding: 0;
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 100vmin;
+            font-size: 1vw;
         }
 
         html,
         body
         {
             height: 100vh;
-            background-color: rgb(255, 0, 170);
+            background-color: rgb(145, 145, 145);
         }
 
         body{
@@ -38,14 +38,46 @@
             top: 0;
             left: 0;
             outline: none;
-            z-index: 0;
+            z-index: 1;
+            pointer-events: none;
         }
 
+        #toggle 
+        {
+            position: absolute; 
+            z-index: 0; 
+            top: 0; 
+            left: 0; 
+            font-size: 25vw;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .buttoninpage
+        {
+            position: relative;
+            z-index: 2;
+            top: 0;
+            left: 0;
+            padding: .5rem;
+            margin-top: 2vw;
+            margin-left: 2vw;
+        }
+
+        #background {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <h1> triển lãm </h1>
     <canvas class="webgl"></canvas>
-    <button type="button"  style="position: absolute; z-index: 2; top: 0; left: 0; font-size: 10vmax;" id="toggle">bật nền</button>
+    <button type="button" id="toggle" title="It's a button">bật nền</button>
+    <button type="button" class="buttoninpage" id="xoay" title="Rotation"> toggle xoay</button> <br>
+    <button type="button" class="buttoninpage" id="light0" title="Rotation">toggle red light</button> <br>
+    <button type="button" class="buttoninpage" id="light1" title="Rotation">toggle green light</button> <br>
+    <button type="button" class="buttoninpage" id="light2" title="Rotation">toggle blue light</button> <br>
+    <button type="button" class="buttoninpage" id="light3" title="Rotation">toggle white light</button> <br>
+    <button type="button" class="buttoninpage" id="background" title="Rotation">toggle nền</button>
 </body>
 </html>

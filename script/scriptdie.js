@@ -3,14 +3,6 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.132.2/build/three.module
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js';
 import { DragControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/DragControls.js';
 import { PLYLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/PLYLoader.js';
-import { LineMaterial } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/LineMaterial.js';
-import { ConvexGeometry } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/geometries/ConvexGeometry.js';
-import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js';
-/*import { Line2 } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/Line2.js';
-import { LineMaterial } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/LineMaterial.js';
-import { LineGeometry } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/lines/LineGeometry.js';*/
-//import * as dat from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/libs/dat.gui.module.js';
-
 let objectionxoay = [];
 let objectiondrag = [];
 
@@ -18,10 +10,6 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
-
-// Board Kiem tra
-//const gui = new dat.GUI()
-
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
@@ -41,7 +29,7 @@ const camera = new THREE.OrthographicCamera(-aspect * frustum, aspect * frustum,
 
 // Controls Orbit
 const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+//controls.enableDamping = true
 
 camera.position.set(0,0,camerakhoangcach);
 
@@ -49,40 +37,26 @@ camera.lookAt(0,0,0);
 scene.add(camera);
 controls.update()
 
+const togglenen = document.querySelector('#background');
+let bgvalue = false;
+
 document.querySelector('#toggle').addEventListener('click', function(){
-  scene.background = new THREE.Color(0x999999);
+    bgvalue = true;
+    canvas.style.pointerEvents = 'auto';
+    togglenen.style.display = 'block';
 })
+
+togglenen.addEventListener('click', function(){
+    bgvalue = !bgvalue;
+})
+
+console.log(scene.background);
 
 // Materials
-const verybasicmat = new THREE.MeshBasicMaterial( {
-	color: 0xffffff,
-    transparent: true,
-    opacity: .8
-} );
-
-const vmhmatsurface = new THREE.MeshBasicMaterial( {
-	color: 0x999999,
-    transparent: true,
-    opacity: .3
-} );
-
-const wireframemat = new THREE.MeshBasicMaterial({
-    color: 0xffffff, 
-    wireframe: true,
-    transparent: true,
-    opacity: 0.1
-})
-
 const wireframematgeo = new THREE.LineBasicMaterial({
     color: 0x000000,
     transparent: true,
     opacity: .3,
-})
-
-const vmhlinematold = new THREE.LineDashedMaterial({
-    color: 0x0026fc,
-    dashSize: .3,
-    gapSize: 1,
 })
 
 const sangbongmat = new THREE.MeshPhysicalMaterial({
@@ -90,42 +64,12 @@ const sangbongmat = new THREE.MeshPhysicalMaterial({
     side: THREE.DoubleSide,
     shadowSide: THREE.DoubleSide,
     metalness: 0,
-    roughness: 0,
+    roughness: .08,
     transparent: true,
-    opacity: 0.5,
+    opacity: .4,
     depthWrite: false,
     depthTest: false,
-    transmission: 1.0,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0
-})
-
-const sangbongmat1 = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff, 
-    side: THREE.DoubleSide,
-    //shadowSide: THREE.DoubleSide,
-    metalness: 0,
-    roughness: 0,
-    transparent: true,
-    opacity: 0.5,
-    depthWrite: false,
-    depthTest: false,
-    transmission: 1.0,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0
-})
-
-const legomat = new THREE.MeshPhysicalMaterial({
-    color: 0x2a9df4, 
-    //side: THREE.DoubleSide,
-    //shadowSide: THREE.DoubleSide,
-    metalness: 0,
-    roughness: 0,
-    transparent: true,
-    opacity: 1,
-    //depthWrite: false,
-    //depthTest: false,
-    transmission: 0.2,
+    transmission: .99,
     clearcoat: 1.0,
     clearcoatRoughness: 0
 })
@@ -137,56 +81,74 @@ const legomat = new THREE.MeshPhysicalMaterial({
 // Mat Phang
 const planeszwidth = 2/3*aspect*frustum;
 const planeszheight = aspect*frustum;
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth), new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.FrontSide}));
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth), new THREE.MeshBasicMaterial({color: 0x7d7d7d, side: THREE.FrontSide}));
 
 
 const planewireframe = new THREE.WireframeGeometry(new THREE.PlaneGeometry(planeszheight, planeszwidth));
 
 const planewire = new THREE.LineSegments(planewireframe, wireframematgeo);
+planewire.position.z = -.02;
 const planegroup = new THREE.Group().add(plane).add(planewire);
 planegroup.rotateX(-Math.PI/2);
-planegroup.position.set(0,-frustum/2,0);
+planegroup.position.set(0,-frustum*1/3,0);
 
 scene.add(planegroup);
 
 //atb
 let a = 4;
-let b = 2;
-objectload('static/SOUND.ply', sangbongmat, false, true, 0, 0, 5, b, b, b, "cac");
-objectload('static/CONSTRAINT.ply', sangbongmat1, false, true, 5, 0, 0, a, a, a, "cac");
-objectload('static/PLACE.ply', sangbongmat, false, true, -5, 0, 0, a, a, a, "cac");
-objectload('static/SCENT.ply', sangbongmat, false, true, 13, 0, 0, a, a, a, "cac");
+let k = planegroup.position.y;
+let objtonghop = new THREE.Object3D;
+objectload('static/amb/SOUND.ply', sangbongmat, true, true, -9, k, 0, a, a, a, "cac");
+objectload('static/amb/SCENT.ply', sangbongmat, true, true, -4, k, 0, a, a, a, "cac");
+objectload('static/amb/PLACE.ply', sangbongmat, true, true, 2.8, k, 0, a, a, a, "cac");
+objectload('static/amb/CONSTRAINT.ply', sangbongmat, true, true, 8, k, 0, a, a, a, "cac");
 
+scene.add(objtonghop);
 //drag atb
 const controldrag = new DragControls(objectiondrag, camera, canvas);
 
 controldrag.addEventListener( 'dragstart', function ( event ) {
     
-	event.object.material.transparent = false;
+	event.object.material.metalness = 1;
     controls.enabled = false;
 } );
 
 controldrag.addEventListener( 'dragend', function ( event ) {
 
-	event.object.material.transparent = true;
+	event.object.material.metalness = 0;
     controls.enabled = true;
 } );
 
+//// Light 1
+
+let pointLight = [];
+
+pointLight.push( new THREE.PointLight(0xff0000, 6, 0, 1) )
+pointLight[0].position.set(0,5,5);
 
 //// Light 2
+pointLight.push( new THREE.PointLight(0x00ff00, 6, 0, 1) )
+pointLight[1].position.set(0,5,-5);
 
-const pointLight2 = new THREE.PointLight(0x000ff, 8)
-pointLight2.position.set(0.85,0.48,0.48);
+//// Light 3
 
-//// Ambient Light
-const ambient = new THREE.AmbientLight( 0xffffff, 20);
-scene.add( ambient );
+pointLight.push( new THREE.PointLight(0x0000ff, 6, 0, 1) )
+pointLight[2].position.set(5,5,0);
 
-//// DirLight1
-const light = new THREE.DirectionalLight(0xFFFFFF, 30);
-light.position.set(-1, 2, .1);
-scene.add(light);
+//// Light 4
+pointLight.push( new THREE.PointLight(0xffffff, 6, 0, 1) )
+pointLight[3].position.set(-5,5,0);
 
+// Ambient Light
+const ambientlight1 = new THREE.AmbientLight(0x8f388d, 5);
+scene.add(ambientlight1);
+
+for (let t = 0; t <= pointLight.length - 1; t++) {
+    scene.add(pointLight[t]);
+    document.querySelector('#light' + String(t)).addEventListener('click', function(){
+        pointLight[t].visible = !pointLight[t].visible;
+    })
+}
 
 ///////////////////////////////////////////////////////////
 
@@ -238,19 +200,51 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 /**
  * Animate
  */
+let xoay= true;
+let elapseold = 0;
+let elapseoffset = 0;
+let xoaycheck;
+let koxoaycheck;
 
+document.querySelector('#xoay').addEventListener('click', function(){
+    xoay = !xoay;
+    if (xoay){
+        xoaycheck = true;
+    } else {
+        koxoaycheck = true;
+    }
+})
 
 ///////////////////////////////////////////////////////////
 const clock = new THREE.Clock()
 
 const tick = () =>
-{
-    const elapsedTime = clock.getElapsedTime()
+{      
+    if (bgvalue) {
+        scene.background = new THREE.Color(0x545454); 
+    }
+    else {
+        scene.background = null; 
+    }
 
+    // Xoay
+    const elapsedTime = clock.getElapsedTime();
+
+    if (xoaycheck) {
+        elapseoffset += clock.elapsedTime - elapseold;
+        xoaycheck = false;
+    }
+
+    if (koxoaycheck) {
+        elapseold = clock.elapsedTime;
+        koxoaycheck = false;
+    }
     // Update objects
-    objectionxoay.forEach((obj) => {
-        obj.rotation.y = .5 * elapsedTime;
-    });
+    if (xoay) {
+        objectionxoay.forEach((obj) => {
+            obj.rotation.y = .5 * (elapsedTime - elapseoffset);
+        })
+    }
 
     // Update Orbital Controls
     controls.update();
@@ -280,10 +274,11 @@ function objectload(link, vatlieu, xoayornot, dragornot, vtx, vty, vtz, scl1, sc
         meshobj.position.set(vtx,vty,vtz);
 
         meshobj.name = String(namedata);
-        scene.add(meshobj);
         if (xoayornot) { objectionxoay.push(meshobj); }
 
         if (dragornot) { objectiondrag.push(meshobj); }
+
+        objtonghop.add(meshobj);
     });
 }
 
