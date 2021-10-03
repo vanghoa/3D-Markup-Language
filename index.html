@@ -12,7 +12,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 1.5vh;
+            font-size: 1.8vh;
         }
 
         html,
@@ -52,7 +52,6 @@
             width: fit-content;
             z-index: 1;
             bottom: 0;
-            left: 0;
         }
 
         p {
@@ -113,7 +112,7 @@
                 <button type="button" id="vmhrect">VMH đơn giản</button> </br>
                 <button type="button" id="vmhtri">VMH đơn giản hơn</button> </br>
                 <button type="button" id="vmhxoa" style="background-color:hotpink">Xóa VMH</button> </br>
-                <button type="button" id="togglehelper" style="background-color: #0026fc; color: white;">VMH helper</button> <br>
+                <button type="button" id="togglehelper" style="background-color: #0000ff; color: white;">VMH helper</button> <br>
             </div>
         </div>
 
@@ -127,16 +126,21 @@
         <div class="container">
             <p>Di chuyển đến 1 địa điểm khác </p> 
             <div class="btnvmh">
-                <button type="button" id="dichuyen">đến nhà a M</button> </br>
+                <button type="button" id="dichuyen">Đến nhà a M</button> </br>
             </div>
         </div>
 
-        <div class="containerabso">
+        <div class="containerabso" style="left: 0;">
             <div class="btnvmh">
                 <button type="button" id="xoamoithu">DELETE MEMORY :((</button>
             </div>
         </div>
 
+        <div class="containerabso" style="right: 0;">
+            <div class="btnvmh">
+                <button type="button" id="exhibition" onclick="location.href='exhibition.html'">Đến thăm triển lãm Ambient Container</button>
+            </div>
+        </div>
         
     <canvas class="webgl"></canvas>
 </body>

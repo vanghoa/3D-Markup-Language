@@ -35,14 +35,14 @@ import { LineGeometry } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm
 
 let objectionxoay = [];
 let objectiondrag = [];
-let soanchor = 3;
+let soanchor = 8;
 // Anchor
 let anchortong = new THREE.Object3D();
 let objectiondragcontainer = [];
 let controlarray = [];
 let anchposition = [];
 let anchcolor = [];
-let vmhhelpercheck = false;
+let vmhhelpercheck = true;
 // Data drag
 let datadragable =[];
 let controlarraydata = [];
@@ -96,12 +96,12 @@ function teleport(maybay) {
         meshenv.material.map = texture[maybay];
         hienra = true;
 
-    },2000);
+    },2500);
 
     setTimeout(function(){
         hienra = false;
         dichuyenbtn.disabled = false;
-    },4000);
+    },5000);
 }
 
 /*
@@ -143,15 +143,13 @@ controls.update()
 
 // Materials
 const verybasicmat = new THREE.MeshBasicMaterial( {
-	color: 0xffffff,
-    transparent: true,
-    opacity: .8
+	color: 0xffffff
 } );
 
 const vmhmatsurface = new THREE.MeshBasicMaterial( {
-	color: 0x999999,
+	color: 0x0000ff,
     transparent: true,
-    opacity: .3
+    opacity: .16
 } );
 
 const wireframemat = new THREE.MeshBasicMaterial({
@@ -179,7 +177,7 @@ const vmhlinemat = new LineMaterial({
 }) 
 */
 const vmhlinematold = new THREE.LineDashedMaterial({
-    color: 0x0026fc,
+    color: 0xffffff,
     dashSize: .3,
     gapSize: 1,
 })
@@ -238,10 +236,12 @@ objectload('./static/LEGO-cut.ply', legomat, false, true, -planeszheight/2, plan
 
 //drag atb
 const controldrag = new DragControls(objectiondrag, camera, canvas);
+let atbmatdrag;
 
 controldrag.addEventListener( 'dragstart', function ( event ) {
     
-	event.object.material.transparent = false;
+    atbmatdrag = event.object.material;
+	event.object.material = verybasicmat;
     controls.enabled = false;
     for (let s = 0; s <= controlarray.length - 1; s++){
             controlarray[s].enabled = false;
@@ -254,7 +254,8 @@ controldrag.addEventListener( 'dragstart', function ( event ) {
 
 controldrag.addEventListener( 'dragend', function ( event ) {
 
-	event.object.material.transparent = true;
+	event.object.material = atbmatdrag;
+    atbmatdrag = null;
     controls.enabled = true;
     for (let s = 0; s <= controlarray.length - 1; s++){
             controlarray[s].enabled = true;
@@ -306,7 +307,6 @@ function generateanchor(soanchorx) {
             for (let k = 0; k <= controlarray.length - 1; k++) 
             {
                 controlarray[k].addEventListener('dragstart', function(event){
-                    controldrag.enabled = false;
                     event.object.material.transparent = false;
                     disenabledrag(controlarray /**array cua ban */, k, controlarraydata /**cac array khac */, false);
                 });
@@ -322,7 +322,6 @@ function generateanchor(soanchorx) {
                 }); 
             
                 controlarray[k].addEventListener('dragend', function(event){
-                    controldrag.enabled = true;
                     event.object.material.transparent = true;
                     disenabledrag(controlarray /**array cua ban */, k, controlarraydata /**cac array khac */, true);
                     /*
@@ -340,8 +339,15 @@ function generateanchor(soanchorx) {
 }
 generateanchor(soanchor);
 //////
-document.querySelector('#togglehelper').addEventListener('click', function(){
+const helpervmh = document.querySelector('#togglehelper');
+
+helpervmh.addEventListener('click', function(){
     vmhhelpercheck = !vmhhelpercheck;
+    if (vmhhelpercheck) {
+        helpervmh.style.backgroundColor = '#0000ff'
+    } else {
+        helpervmh.style.backgroundColor = '#8585ff'
+    }
 });
 
 // Vung Ma Hoa
@@ -531,9 +537,13 @@ const tick = () =>
     renderer.render(scene, camera);
 
     // Line for vmh
-    if (vmhhelpercheck) {linevmh();}
-    else {scene.remove(pointline);
-        scene.remove(pointmesh);}
+    if (vmhhelpercheck) {
+        linevmh();
+    }
+    else {
+        scene.remove(pointline);
+        scene.remove(pointmesh);
+    }
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick);
@@ -631,12 +641,12 @@ function wireframeload(linkhop, linknap, xoayornot, diemx, diemy, diemz, hslhue,
 
 const slidedata = document.querySelector("#slidedata");
 let cooloff = false;
+let datamaterialdrag = [];
 
 slidedata.oninput = function() {
     if (!cooloff) {
         datadragable.forEach((cac) => {
             cac.forEach((lon) => {
-                let indec = 0;
                 lon.traverse((child) => {
                     if (child.isMesh) {
                         child.geometry.dispose();
@@ -697,12 +707,31 @@ function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot
             controlarraydata[thutu].transformGroup = true;
 
             controlarraydata[thutu].addEventListener( 'dragstart', function ( event ) {
-                controldrag.enabled = false;
+                datamaterialdrag = [];
+
+                event.object.traverse((child) => {
+                    if (child.isMesh) {
+                        datamaterialdrag.push(child.material);
+                        child.material = verybasicmat;
+                    }
+                })
+
                 disenabledrag(controlarraydata /**array cua ban */, thutu, controlarray /**cac array khac */, false);
             } );
             
             controlarraydata[thutu].addEventListener( 'dragend', function ( event ) {
-                controldrag.enabled = true;
+
+                let mc = 0;
+
+                event.object.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material = datamaterialdrag[mc];
+                        mc++;
+                    }
+                })
+
+                datamaterialdrag = [];
+
                 disenabledrag(controlarraydata /**array cua ban */, thutu, controlarray /**cac array khac */, true);
             } );
 
@@ -712,6 +741,7 @@ function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot
 }
 
 function disenabledrag(arrayofu, thutunao, otherarray, enordis) {
+    controldrag.enabled = enordis;
     controls.enabled = enordis;
     for (let s = 0; s <= arrayofu.length - 1; s++){
         if (s != thutunao) {
@@ -746,15 +776,16 @@ document.querySelector('#containerno').addEventListener('click', numbercontainer
 
 function numbercontainer() {
     let x = Number(document.querySelector('#novalue').value);
-    if (x < 10)  {
+    if (x <= 10 && x >= 4)  {
         generateanchor(x);
-    } else {
+    } else if (x > 10) {
         alert("Nhiều thế có hiển thị được hết đâu");
+    } else if (x < 4) {
+        alert("Phải nhiều hơn hoặc bằng 4 để tạo ra khối đa diện lồi");
     }
 }
 
 /**/
-//console.log(anchortong);
 
 // Chuc nang cut
 document.addEventListener('keydown', function (e) {
