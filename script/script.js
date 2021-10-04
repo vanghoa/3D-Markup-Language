@@ -223,6 +223,8 @@ const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth
 const planewireframe = new THREE.WireframeGeometry(new THREE.PlaneGeometry(planeszheight, planeszwidth));
 
 const planewire = new THREE.LineSegments(planewireframe, wireframematgeo);
+planewire.position.z = -.04;
+
 const planegroup = new THREE.Group().add(plane).add(planewire);
 planegroup.rotateX(-Math.PI/2);
 planegroup.position.set(0,-frustum/2,0);

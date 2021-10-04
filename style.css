@@ -3,18 +3,14 @@
     margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.8vh;
-}
-
-html,
-body
-{
-    height: 100vh;
-    background-color: rgb(255, 255, 255);
+    font-size: 1.4vh;
 }
 
 body{
-    overflow-x: hidden;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgb(255, 255, 255);
 }
 
 .webgl
@@ -24,11 +20,13 @@ body{
     left: 0;
     outline: none;
     z-index: 0;
+    width: 100%;
+    height: 100%;
 }     
 
 .container {
     position: relative;
-    padding: 1rem;
+    margin: 1rem;
     width: fit-content;
     z-index: 1;
 }
@@ -39,7 +37,7 @@ body{
 
 .containerabso {
     position: absolute;
-    padding: 1rem;
+    margin: 1rem;
     width: fit-content;
     z-index: 1;
     bottom: 0;
@@ -60,12 +58,7 @@ div.btnvmh > button {
     width: 10vmax;
 }
 div.btnview, div.btnvmh {
-    margin-left: -3px;
-}
-
-
-button {
-    line-break: loose;
+    margin-left: -.2rem;
 }
 
 input {

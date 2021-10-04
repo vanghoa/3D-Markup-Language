@@ -26,15 +26,22 @@ let aspect = sizes.width / sizes.height;
 const frustum = 10;
 const camerakhoangcach = 30;
 const camera = new THREE.OrthographicCamera(-aspect * frustum, aspect * frustum, frustum, -frustum, 1, 1000)
-
 // Controls Orbit
 const controls = new OrbitControls(camera, canvas)
 //controls.enableDamping = true
 
-camera.position.set(0,0,camerakhoangcach);
+if (sizes.width < sizes.height) {
+    camera.position.set(0,camerakhoangcach,0);
+    camera.zoom = .8;
+} else {
+    camera.position.set(0,0,camerakhoangcach);
+}
 
 camera.lookAt(0,0,0);
+
+camera.updateProjectionMatrix();
 scene.add(camera);
+
 controls.update()
 
 const togglenen = document.querySelector('#background');
@@ -47,7 +54,9 @@ document.querySelector('#toggle').addEventListener('click', function(){
 })
 
 togglenen.addEventListener('click', function(){
-    bgvalue = !bgvalue;
+    bgvalue = false;
+    canvas.style.pointerEvents = 'none';
+    togglenen.style.display = 'none';
 })
 
 console.log(scene.background);
@@ -79,8 +88,8 @@ const sangbongmat = new THREE.MeshPhysicalMaterial({
 // OBJLoad 
 
 // Mat Phang
-const planeszwidth = 2/3*aspect*frustum;
-const planeszheight = aspect*frustum;
+const planeszwidth = 6.5;
+const planeszheight = 25;
 const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeszheight, planeszwidth), new THREE.MeshBasicMaterial({
     color: 0x7d7d7d, 
     side: THREE.FrontSide
@@ -95,7 +104,6 @@ const planegroup = new THREE.Group().add(plane).add(planewire);
 planegroup.rotateX(-Math.PI/2);
 planegroup.position.set(0,-frustum*1/3,0);
 
-scene.add(planegroup);
 
 //atb
 let a = 4;
@@ -105,7 +113,12 @@ objectload('static/amb/SOUND.ply', sangbongmat, true, true, -9, k, 0, a, a, a, "
 objectload('static/amb/SCENT.ply', sangbongmat, true, true, -4, k, 0, a, a, a, "cac");
 objectload('static/amb/PLACE.ply', sangbongmat, true, true, 2.8, k, 0, a, a, a, "cac");
 objectload('static/amb/CONSTRAINT.ply', sangbongmat, true, true, 8, k, 0, a, a, a, "cac");
+if (sizes.width < sizes.height) {
+    objtonghop.rotateY(Math.PI/2);
+    planegroup.rotateZ(Math.PI/2);
+}
 
+scene.add(planegroup);
 scene.add(objtonghop);
 //drag atb
 const controldrag = new DragControls(objectiondrag, camera, canvas);
@@ -126,20 +139,20 @@ controldrag.addEventListener( 'dragend', function ( event ) {
 
 let pointLight = [];
 
-pointLight.push( new THREE.PointLight(0xff0000, 6, 0, 1) )
+pointLight.push( new THREE.PointLight(0xff0000, 8, 0, 1) )
 pointLight[0].position.set(0,5,5);
 
 //// Light 2
-pointLight.push( new THREE.PointLight(0x00ff00, 6, 0, 1) )
+pointLight.push( new THREE.PointLight(0x00ff00, 8, 0, 1) )
 pointLight[1].position.set(0,5,-5);
 
 //// Light 3
 
-pointLight.push( new THREE.PointLight(0x0000ff, 6, 0, 1) )
+pointLight.push( new THREE.PointLight(0x0000ff, 8, 0, 1) )
 pointLight[2].position.set(5,5,0);
 
 //// Light 4
-pointLight.push( new THREE.PointLight(0xffffff, 6, 0, 1) )
+pointLight.push( new THREE.PointLight(0xffffff, 8, 0, 1) )
 pointLight[3].position.set(-5,5,0);
 
 // Ambient Light
