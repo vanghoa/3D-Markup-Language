@@ -5,15 +5,14 @@ import { DragControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm
 import { PLYLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/PLYLoader.js';
 import { ConvexGeometry } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/geometries/ConvexGeometry.js';
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js'; 
-
 /////////////////////////////
 /*
-import * as THREE from '../three.js/build/three.module.js';
-import { OrbitControls } from '../three.js/examples/jsm/controls/OrbitControls.js';
-import { DragControls } from '../three.js/examples/jsm/controls/DragControls.js';
-import { PLYLoader } from '../three.js/examples/jsm/loaders/PLYLoader.js';
-import { ConvexGeometry } from '../three.js/examples/jsm/geometries/ConvexGeometry.js';
-import { GLTFLoader } from '../three.js/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from '../../three.js/build/three.module.js';
+import { OrbitControls } from '../../three.js/examples/jsm/controls/OrbitControls.js';
+import { DragControls } from '../../three.js/examples/jsm/controls/DragControls.js';
+import { PLYLoader } from '../../three.js/examples/jsm/loaders/PLYLoader.js';
+import { ConvexGeometry } from '../../three.js/examples/jsm/geometries/ConvexGeometry.js';
+import { GLTFLoader } from '../../three.js/examples/jsm/loaders/GLTFLoader.js';
 */
 /////////////////////////////
 /*
@@ -35,7 +34,7 @@ import { LineGeometry } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm
 
 let objectionxoay = [];
 let objectiondrag = [];
-let soanchor = 8;
+let soanchor = 4;
 // Anchor
 let anchortong = new THREE.Object3D();
 let objectiondragcontainer = [];
@@ -303,7 +302,7 @@ function generateanchor(soanchorx) {
 
             ///////////////////
             for (let dem = -Math.floor(soanchorx/2), colordem = 0, nameanc = 0; dem <= soanchorx -1 -Math.floor(soanchorx/2); dem++, colordem+=.2, nameanc++) {
-                wireframeload('./static/CAINOI2.ply', './static/CAINAP.ply', false, dem*2.3,1,0, colordem, nameanc);
+                wireframeload('./static/CAINOI2.ply', './static/CAINAP.ply', false, dem*2.3, dem*.01 + 1, dem*.01, colordem, nameanc);
             }
             ////////// FUCK2
             for (let k = 0; k <= controlarray.length - 1; k++) 
@@ -400,6 +399,7 @@ function linevmh() {
     scene.remove(pointmesh);
     let pointgraph = [];
     //let colorgraph = [];
+    let pointsurface;
 
     for (let v = 0; v <= (anchposition.length - 2); v++) {
         for (let t = v + 1; t <= (anchposition.length - 1); t++) {
@@ -416,12 +416,12 @@ function linevmh() {
     pointmetry.setColors(colorgraph);
           pointline = new Line2(pointmetry, vmhlinemat); */
           
-    if (anchposition.length >= 7) {
-    const pointsurface = new ConvexGeometry(anchposition);
-    pointmesh = new THREE.Mesh(pointsurface, vmhmatsurface);
-    scene.add(pointmesh);
-    }
-    
+    if (anchposition.length >= 4) {
+        pointsurface = new ConvexGeometry(anchposition);
+        pointmesh = new THREE.Mesh(pointsurface, vmhmatsurface);
+        scene.add(pointmesh);
+    } 
+
     const pointmetry = new THREE.BufferGeometry().setFromPoints(pointgraph);
     pointline = new THREE.Line(pointmetry, vmhlinematold);
     
@@ -778,13 +778,16 @@ document.querySelector('#containerno').addEventListener('click', numbercontainer
 
 function numbercontainer() {
     let x = Number(document.querySelector('#novalue').value);
-    if (x <= 10 && x >= 4)  {
+    if (x <= 20 && x >= 4)  {
         generateanchor(x);
-    } else if (x > 10) {
+    } else if (x > 20) {
         alert("Nhiều thế có hiển thị được hết đâu");
     } else if (x < 4) {
         alert("Phải nhiều hơn hoặc bằng 4 để tạo ra khối đa diện lồi");
     }
+
+    console.log(anchposition);
+    
 }
 
 /**/
