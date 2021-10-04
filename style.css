@@ -28,6 +28,7 @@ body{
     position: relative;
     margin: 1rem;
     width: fit-content;
+    width: -moz-fit-content;
     z-index: 1;
 }
 
@@ -39,6 +40,7 @@ body{
     position: absolute;
     margin: 1rem;
     width: fit-content;
+    width: -moz-fit-content;
     z-index: 1;
     bottom: 0;
 }
@@ -48,17 +50,22 @@ p {
     color:white;
     background-color:black;
     width: fit-content;
+    width: -moz-fit-content;
 }
 
 
 div.btnview > button {
-    width: 5vmax;
+    width: 6vmax;
 }        
 div.btnvmh > button {
-    width: 10vmax;
+    width: 12vmax;
 }
 div.btnview, div.btnvmh {
     margin-left: -.2rem;
+}
+
+button {
+    overflow: visible;
 }
 
 input {
