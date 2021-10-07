@@ -607,8 +607,8 @@ const tick = () =>
 
     // Chuc nang cut
     if (cutbatdau) {
-        lnvmh+=.0029;
-        opavmh+=.0029;
+        lnvmh+=.0035;
+        opavmh+=.0035;
         vmhmatsurface.color.setHSL(240/360, 1, lnvmh);
         vmhmatsurface.opacity = opavmh;
     }
