@@ -45,6 +45,13 @@ let vmhhelpercheck = true;
 // Data drag
 let datadragable =[];
 let controlarraydata = [];
+// oRbIt cOnTrOls
+let targetcontrols = new THREE.Vector3(0,0,0);
+let dynamiccenter = false;
+// chucnangcut
+let lnvmh = .5;
+let opavmh = .16;
+let cutbatdau = false;
 
 const sizes = {
     width: window.innerWidth,
@@ -126,7 +133,7 @@ let aspect = sizes.width / sizes.height;
 const frustum = 10;
 const camerakhoangcach = 30;
 const camera = new THREE.OrthographicCamera(-aspect * frustum, aspect * frustum, frustum, -frustum, 1, 1000)
-camera.zoom = .5;
+camera.zoom = .4;
 camera.updateProjectionMatrix();
 
 // Controls Orbit
@@ -135,9 +142,7 @@ const controls = new OrbitControls(camera, canvas)
 
 camera.position.set(0,0,camerakhoangcach);
 
-camera.lookAt(0,0,0);
 scene.add(camera);
-controls.update()
 
 
 // Materials
@@ -211,9 +216,8 @@ const legomat = new THREE.MeshPhysicalMaterial({
 // Ambient
 
 // Mat Phang
-let aspectplane = aspect;
-if (aspect < 1) {aspectplane = 1/aspect}
-if (sizes.width < sizes.height) {aspectplane *= 3/4}
+let aspectplane = 2;
+if (aspect < 1) {aspectplane = 1/aspect * 3/4}
 
 const planeszwidth = aspectplane*frustum;
 const planeszheight = aspectplane*frustum;
@@ -302,7 +306,7 @@ function generateanchor(soanchorx) {
 
             ///////////////////
             for (let dem = -Math.floor(soanchorx/2), colordem = 0, nameanc = 0; dem <= soanchorx -1 -Math.floor(soanchorx/2); dem++, colordem+=.2, nameanc++) {
-                wireframeload('./static/CAINOI2.ply', './static/CAINAP.ply', false, dem*2.3, dem*.01 + 1, dem*.01, colordem, nameanc);
+                wireframeload('./static/CAINOI2.ply', './static/CAINAP.ply', false, dem*2.3, dem*Math.random() * .1 + 1, dem*Math.random() * .1, colordem, nameanc);
             }
             ////////// FUCK2
             for (let k = 0; k <= controlarray.length - 1; k++) 
@@ -333,6 +337,9 @@ function generateanchor(soanchorx) {
 
                     let tramcamqua2 = new THREE.Vector3();
                     objectiondragcontainer[k][0].getWorldPosition(tramcamqua2);
+                    if (dynamiccenter) {
+                        event.object.getWorldPosition(targetcontrols);
+                    }
                 
                 }); 
             }
@@ -342,12 +349,27 @@ generateanchor(soanchor);
 //////
 const helpervmh = document.querySelector('#togglehelper');
 
-helpervmh.addEventListener('click', function(){
+helpervmh.addEventListener('click', vmhhelperchek);
+
+function vmhhelperchek(){
     vmhhelpercheck = !vmhhelpercheck;
     if (vmhhelpercheck) {
-        helpervmh.style.backgroundColor = '#0000ff'
+        helpervmh.style.backgroundColor = '#0000ff';
     } else {
-        helpervmh.style.backgroundColor = '#8585ff'
+        helpervmh.style.backgroundColor = '#8585ff';
+    }
+}
+
+// Dynamic center
+
+const dynamiccontrol = document.querySelector('#dynamiccentral');
+
+dynamiccontrol.addEventListener('click', function(){
+    dynamiccenter = !dynamiccenter;
+    if (dynamiccenter) {
+        dynamiccontrol.style.backgroundColor = '#0000ff';
+    } else {
+        dynamiccontrol.style.backgroundColor = '#8585ff';
     }
 });
 
@@ -359,30 +381,33 @@ const kickvmh = document.querySelector('#kickhoatvmh');
 const vmhtri = document.querySelector('#vmhtri');
 const vmhxoa = document.querySelector('#vmhxoa');
 
-function vmhcreate(geometryvmh){
+function vmhcreate(geometryvmh,chenhbaonhieu,sobichia){
     scene.remove(vmh);
     const wireframe = new THREE.WireframeGeometry(geometryvmh);
 
     vmh = new THREE.LineSegments(wireframe, wireframematgeo);
+    
+    vmh.position.set(0,(chenhbaonhieu - frustum)/sobichia,0);
 
     scene.add(vmh);    
 }
 
 kickvmh.addEventListener('click', function(){
-        vmhcreate(new THREE.OctahedronGeometry(frustum/2,Number(slidevmh.value))); 
+        vmhcreate(new THREE.OctahedronGeometry(planeszwidth/2,Number(slidevmh.value)), planeszwidth, -2); 
 });
 
 slidevmh.oninput = function() {
-        vmhcreate(new THREE.OctahedronGeometry(frustum/2,Number(slidevmh.value)));
+        vmhcreate(new THREE.OctahedronGeometry(planeszwidth/2,Number(slidevmh.value)), planeszwidth, -2);
 }
 
 vmhrect.addEventListener('click', function(){
-        vmhcreate(new THREE.BoxGeometry(frustum, frustum, frustum));
+        const canhcube = planeszwidth*4/5;
+        vmhcreate(new THREE.BoxGeometry(canhcube, canhcube, canhcube), canhcube, 2);
 });
 
 vmhtri.addEventListener('click', function(){
-        vmhcreate(new THREE.ConeGeometry(planeszwidth/2, frustum, 3));
-        vmh.position.z = 0;
+        const caocone = planeszwidth*4/5;
+        vmhcreate(new THREE.ConeGeometry(planeszwidth/2, caocone, 3), caocone, 2);
 });
 
 vmhxoa.addEventListener('click', function(){
@@ -502,7 +527,6 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 
 
-
 /**
  * Animate
  */
@@ -511,10 +535,23 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 ///////////////////////////////////////////////////////////
 const clock = new THREE.Clock()
 
+let xoay = true;
+let elapseold = 0;
+let elapseoffset = 0;
+let xoaycheck;
+let koxoaycheck;
+
+function xoaydata() {
+    xoay = !xoay;
+    if (xoay){
+        xoaycheck = true;
+    } else {
+        koxoaycheck = true;
+    }
+}
+
 const tick = () =>
 {
-    const elapsedTime = clock.getElapsedTime()
-
     // Travel
     if (tanbien) {
         texturemat.opacity-=0.01;
@@ -526,13 +563,34 @@ const tick = () =>
         lightness+=0.01;
         scene.background.setHSL(0,0,lightness);
     }
+///////////////
+    // Xoay
+    const elapsedTime = clock.getElapsedTime();
 
+    if (xoaycheck) {
+        elapseoffset += clock.elapsedTime - elapseold;
+        xoaycheck = false;
+    }
+
+    if (koxoaycheck) {
+        elapseold = clock.elapsedTime;
+        koxoaycheck = false;
+    }
     // Update objects
-    objectionxoay.forEach((obj) => {
-        obj.rotation.y = .5 * elapsedTime;
-    });
-
+    if (xoay) {
+        objectionxoay.forEach((obj) => {
+            obj.rotation.y = .5 * (elapsedTime - elapseoffset);
+        })
+    }
+//////////////
     // Update Orbital Controls
+    if (dynamiccenter) {
+        controls.target.copy(targetcontrols); 
+    }
+    else {
+        controls.target.set(0,0,0);
+    }
+
     controls.update();
 
     // Render
@@ -545,6 +603,14 @@ const tick = () =>
     else {
         scene.remove(pointline);
         scene.remove(pointmesh);
+    }
+
+    // Chuc nang cut
+    if (cutbatdau) {
+        lnvmh+=.0029;
+        opavmh+=.0029;
+        vmhmatsurface.color.setHSL(240/360, 1, lnvmh);
+        vmhmatsurface.opacity = opavmh;
     }
 
     // Call tick again on the next frame
@@ -717,6 +783,7 @@ function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot
                         child.material = verybasicmat;
                     }
                 })
+                xoaydata();
 
                 disenabledrag(controlarraydata /**array cua ban */, thutu, controlarray /**cac array khac */, false);
             } );
@@ -733,8 +800,11 @@ function GLTFloaddata(link, sclx, scly, sclz, vtx, vty, vtz, identity, xoayornot
                 })
 
                 datamaterialdrag = [];
-
+                xoaydata();
                 disenabledrag(controlarraydata /**array cua ban */, thutu, controlarray /**cac array khac */, true);
+                if (dynamiccenter) {
+                event.object.getWorldPosition(targetcontrols);
+                }
             } );
 
          }
@@ -801,18 +871,41 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+const countercut = document.querySelector('#counterforcut');
 
 function chucnangcut() {
-    for (let i = 0; i <= (scene.children.length - 1); i++) {
-        if (scene.children[i].name === "concac") {
-            scene.children[i].visible = !scene.children[i].visible;
-            //scene.children[i].traverse((child) => {
-                //if (child.isMesh) {
-                    //child.material.visible = false;
-                //}
-            //});
-        }
+
+    cutbatdau = true;
+    lnvmh = .5;
+    opavmh = .16;
+
+    for (let c = 0; c <= 6000; c+= 1000) {
+        setTimeout(function(){
+            if (c <= 5000) {
+                countercut.innerHTML = String(Math.abs(c/1000 - 5));
+                countercut.style.fontSize = String(20 + c/1000*22) + 'vh';
+            } else {
+                countercut.innerHTML = '';
+                cutbatdau = false;
+                vmhmatsurface.color.setHSL(240/360, 1, .5);
+                vmhmatsurface.opacity = .16;
+            }
+
+            if (c === 5000) {
+                for (let i = 0; i <= (scene.children.length - 1); i++) {
+                    if (scene.children[i].name === "concac") {
+                        scene.children[i].visible = !scene.children[i].visible;
+                    }
+                }
+
+                vmhhelpercheck = false;
+                helpervmh.style.backgroundColor = '#8585ff';
+
+            }
+
+        }, c)
     }
+
 }
 
 

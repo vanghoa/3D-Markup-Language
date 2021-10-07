@@ -8,6 +8,20 @@
 
     <title>demo Ngôn Ngữ</title>
     <script type="module" src="script/script.js"></script>
+    <style>
+        #counterforcut 
+        {
+            position: absolute; 
+            margin: 1rem;
+            z-index: 0; 
+            top: 0; 
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            text-align: center;
+            line-height: .75;
+        }
+    </style>
 </head>
 <body>
         <div class="container">
@@ -19,6 +33,9 @@
                 <button type="button" id="rot-y"> dưới </button> <br>
                 <button type="button" id="rotz"> trước </button>
                 <button type="button" id="rot-z"> sau </button> <br>
+            </div>
+            <div class="btnvmh">
+                <button type="button" id="dynamiccentral" style="background-color: #8585ff; color: white;">dynamic camera target &#128064</button> </br>
             </div>
         </div>
 
@@ -50,7 +67,7 @@
         </div>
 
         <div class="container">
-            <p>di chuyển đến 1 địa điểm khác </p> 
+            <p>di chuyển đến 1 địa điểm khác &#128506</p> 
             <div class="btnvmh">
                 <button type="button" id="dichuyen">đến nhà a M</button> </br>
             </div>
@@ -68,6 +85,12 @@
             </div>
         </div>
         
+        <div class="containerabso" style="right: 0; top: 0; bottom: auto;">
+            <div class="btnvmh">
+                <button type="button" id="documentation" onclick="window.open('https://cloud-enquiry-e52.notion.site/Gamma-s-o-y-t-i-e-t-021021-e0cabd29fe604079963a6502a158ae61')">documentation <br> (read more)</button>
+            </div>
+        </div>
     <canvas class="webgl"></canvas>
+    <div id="counterforcut"></div>
 </body>
 </html>
