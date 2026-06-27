@@ -1,10 +1,10 @@
 
-import * as THREE from 'https://cdn.skypack.dev/three@0.132.2/build/three.module.js';
-import { OrbitControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js';
-import { DragControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/DragControls.js';
-import { PLYLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/PLYLoader.js';
-import { ConvexGeometry } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/geometries/ConvexGeometry.js';
-import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js'; 
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/controls/OrbitControls.js';
+import { DragControls } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/controls/DragControls.js';
+import { PLYLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/PLYLoader.js';
+import { ConvexGeometry } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/geometries/ConvexGeometry.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/GLTFLoader.js'; 
 /////////////////////////////
 /*
 import * as THREE from '../../three.js/build/three.module.js';
